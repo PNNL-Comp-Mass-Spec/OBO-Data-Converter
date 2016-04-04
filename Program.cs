@@ -29,12 +29,7 @@ namespace OBODataConverter
             mInputFilePath = string.Empty;
             mOutputFilePath = string.Empty;
 
-            mOutputOptions = new clsOboConverter.udtOutputOptions
-            {
-                IncludeParentTerms = true,
-                IncludeGrandparentTerms = true,
-                IncludeDefinition = false
-            };
+            mOutputOptions = clsOboConverter.DefaultOutputOptions();
 
             mPrimaryKeySuffix = clsOboConverter.DEFAULT_PRIMARY_KEY_SUFFIX;
 
@@ -64,7 +59,10 @@ namespace OBODataConverter
 
                 success = converter.ConvertOboFile(mInputFilePath, mOutputFilePath);
 
-                Console.WriteLine("Complete: " + success);
+                if (!success)
+                {
+                    ShowErrorMessage("ConvertOboFile returned false");
+                }
             }
             catch (Exception ex)
             {
@@ -85,7 +83,12 @@ namespace OBODataConverter
         private static bool SetOptionsUsingCommandLineParameters(FileProcessor.clsParseCommandLine objParseCommandLine)
         {
             // Returns True if no problems; otherwise, returns false
-            var lstValidParameters = new List<string> { "I", "O", "PK", "NoP", "NoG", "D", "StripQuotes", "NoObsolete"};
+            var lstValidParameters = new List<string> { 
+                "I", "O", 
+                "PK", "NoP", "NoG", 
+                "Def", "Definition", "StripQuotes", 
+                "Com", "Comm", "Comment", 
+                "NoObsolete"};
 
             try
             {
@@ -134,7 +137,8 @@ namespace OBODataConverter
                 if (objParseCommandLine.IsParameterPresent("NoG"))
                     mOutputOptions.IncludeGrandparentTerms = false;
 
-                if (objParseCommandLine.IsParameterPresent("D"))
+                if (objParseCommandLine.IsParameterPresent("Def") ||
+                    objParseCommandLine.IsParameterPresent("Definition"))
                     mOutputOptions.IncludeDefinition = true;
 
                 if (objParseCommandLine.IsParameterPresent("StripQuotes"))
@@ -142,6 +146,11 @@ namespace OBODataConverter
                     mOutputOptions.IncludeDefinition = true;
                     mOutputOptions.StripQuotesFromDefinition = true;
                 }
+
+                if (objParseCommandLine.IsParameterPresent("Com") ||
+                    objParseCommandLine.IsParameterPresent("Comm") ||
+                    objParseCommandLine.IsParameterPresent("Comment"))
+                    mOutputOptions.IncludeComment = true;
 
                 if (objParseCommandLine.IsParameterPresent("NoObsolete"))
                 {
@@ -203,7 +212,7 @@ namespace OBODataConverter
                 Console.WriteLine("This program reads an Ontology file in the OBO format and converts the data to a tab-delimited text file.");
                 Console.WriteLine();
                 Console.WriteLine("Program syntax:" + Environment.NewLine + exeName);
-                Console.WriteLine(" InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/D] [/StripQuotes] [/NoObsolete]");
+                Console.WriteLine(" InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/Def] [/StripQuotes] [/Com] [/NoObsolete]");
                 Console.WriteLine();
                 Console.WriteLine("The input file is the OBO file to convert");
                 Console.WriteLine();
@@ -217,14 +226,16 @@ namespace OBODataConverter
                 Console.WriteLine("By default the output file includes grandparent terms; remove them with /NoG");
                 Console.WriteLine("Using /NoP auto-enables /NoG");
                 Console.WriteLine();
-                Console.WriteLine("By default the output file will not include the term definitions; include them with /D");
+                Console.WriteLine("By default the output file will not include the term definitions; include them with /Def");
                 Console.WriteLine();
-                Console.WriteLine("When using /D, use /StripQuotes to look for definitions of the form");
+                Console.WriteLine("When using /Def, use /StripQuotes to look for definitions of the form");
                 Console.WriteLine(@"  ""Description of term"" [Ontology:Source]");
                 Console.WriteLine("and only include the text between the double quotes as the definition");
-                Console.WriteLine("Using /StripQuotes auto-enables /D");
+                Console.WriteLine("Using /StripQuotes auto-enables /Def");
                 Console.WriteLine();
-                Console.WriteLine("Use /NoObsolete to exclude terms whose definitions start with OBSOLETE");
+                Console.WriteLine("By default the output file will not include the term comments; include them with /Com");
+                Console.WriteLine();
+                Console.WriteLine("Use /NoObsolete to exclude obsolete terms");
                 Console.WriteLine();
                 Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2016");
                 Console.WriteLine("Version: " + GetAppVersion());

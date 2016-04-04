@@ -6,7 +6,7 @@ and are typically edited / managed using OBO-Edit: http://www.oboedit.org/
 == Syntax ==
 
 OBODataConverter.exe
- InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/D] [/StripQuotes] [/NoObsolete]
+ InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/Def] [/StripQuotes] [/Com] [/NoObsolete]
 
 The input file is the OBO file to convert
 
@@ -20,15 +20,17 @@ By default the output file includes parent terms; remove them with /NoP
 By default the output file includes grandparent terms; remove them with /NoG
 Using /NoP auto-enables /NoG
 
-By default the output file will not include the term definitions; include them with /D
+By default the output file will not include the term definitions; include them with /Def
 
-When using /D, use /StripQuotes to look for definitions of the form 
+When using /Def, use /StripQuotes to look for definitions of the form
   "Description of term" [Ontology:Source]
 and only include the text between the double quotes as the definition
 
-Using /StripQuotes auto-enables /D
+Using /StripQuotes auto-enables /Def
 
-Use /NoObsolete to exclude terms whose definitions start with OBSOLETE"
+By default the output file will not include the term comments; include them with /Com
+
+Use /NoObsolete to exclude obsolete terms
 
 -------------------------------------------------------------------------------
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2016
