@@ -57,6 +57,10 @@ namespace OBODataConverter
                     OutputOptions = mOutputOptions
                 };
 
+                converter.ErrorEvent += converter_ErrorEvent;
+                converter.MessageEvent += converter_MessageEvent;
+                converter.WarningEvent += converter_WarningEvent;
+
                 success = converter.ConvertOboFile(mInputFilePath, mOutputFilePath);
 
                 if (!success)
@@ -75,12 +79,30 @@ namespace OBODataConverter
 
         }
 
+        static void converter_ErrorEvent(object sender, MessageEventArgs e)
+        {
+            ShowErrorMessage(e.Message);
+        }
+
+        static void converter_MessageEvent(object sender, MessageEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        static void converter_WarningEvent(object sender, MessageEventArgs e)
+        {
+            if (e.Message.StartsWith("Warning", StringComparison.InvariantCultureIgnoreCase))
+                Console.WriteLine(e.Message);
+            else
+                Console.WriteLine("Warning: " + e.Message);
+        }
+
         private static string GetAppVersion()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + " (" + PROGRAM_DATE + ")";
         }
 
-        private static bool SetOptionsUsingCommandLineParameters(FileProcessor.clsParseCommandLine objParseCommandLine)
+        private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine objParseCommandLine)
         {
             // Returns True if no problems; otherwise, returns false
             var lstValidParameters = new List<string> { 
