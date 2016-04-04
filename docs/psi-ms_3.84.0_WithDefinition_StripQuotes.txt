@@ -1,5 +1,3 @@
-..\docs\psi-ms_3.84.0.obo /StripQuotes /NoP /NoObsolete /Comment
-
 Term_PK	Term_Name	Identifier	Is_Leaf	Definition	Comment
 MS:0000000MS1	Proteomics Standards Initiative Mass Spectrometry Vocabularies	MS:0000000	0	Proteomics Standards Initiative Mass Spectrometry Vocabularies.	
 MS:1000001MS1	sample number	MS:1000001	1	A reference number relevant to the sample under study.	

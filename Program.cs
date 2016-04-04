@@ -134,6 +134,11 @@ namespace OBODataConverter
                     mInputFilePath = objParseCommandLine.RetrieveNonSwitchParameter(0);
                 }
 
+                if (objParseCommandLine.NonSwitchParameterCount > 1)
+                {
+                    mOutputFilePath = objParseCommandLine.RetrieveNonSwitchParameter(1);
+                }
+
                 string paramValue;
                 if (objParseCommandLine.RetrieveValueForParameter("I", out paramValue))
                 {
