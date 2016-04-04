@@ -30,6 +30,11 @@ namespace OBODataConverter
             public bool StripQuotesFromDefinition;
 
             /// <summary>
+            /// When true, include the ontology comment
+            /// </summary>
+            public bool IncludeComment;
+
+            /// <summary>
             /// When true, include columns Parent_term_name and Parent_term_id in the output
             /// </summary>
             public bool IncludeParentTerms;
@@ -41,7 +46,7 @@ namespace OBODataConverter
             public bool IncludeGrandparentTerms;
 
             /// <summary>
-            /// When true, exclude terms that have a definition that starts with OBSOLETE
+            /// When true, exclude terms that have attribute is_obsolete: true
             /// </summary>
             public bool ExcludeObsolete;
         }
@@ -85,16 +90,7 @@ namespace OBODataConverter
 
             mQuotedDefinitionMatcher = new Regex(@"""(?<Definition>[^""]+)"" +\[.+\]", RegexOptions.Compiled);
 
-            var outputOptions = new udtOutputOptions
-            {
-                IncludeDefinition = false,
-                StripQuotesFromDefinition = false,
-                IncludeParentTerms = true,
-                IncludeGrandparentTerms = true,
-                ExcludeObsolete = false
-            };
-
-            OutputOptions = outputOptions;
+            OutputOptions = DefaultOutputOptions();
         }
 
         /// <summary>
@@ -246,6 +242,22 @@ namespace OBODataConverter
             }
         }
 
+        public static udtOutputOptions DefaultOutputOptions()
+        {
+            var outputOptions = new udtOutputOptions()
+            {
+                IncludeDefinition = false,
+                StripQuotesFromDefinition = false,
+                IncludeComment = false,
+                IncludeParentTerms = true,
+                IncludeGrandparentTerms = true,
+                ExcludeObsolete = false
+            };
+
+            return outputOptions;
+
+        }
+
         private string ConstructOutputFilePath(FileInfo oboFile)
         {
 
@@ -335,6 +347,9 @@ namespace OBODataConverter
 
             if (OutputOptions.IncludeDefinition)
                 dataColumns.Add(ontologyTerm.Definition);
+
+            if (OutputOptions.IncludeComment)
+                dataColumns.Add(ontologyTerm.Comment);
 
             return dataColumns;
         }
@@ -534,6 +549,11 @@ namespace OBODataConverter
 
             try
             {
+                var purgatoryTermID = string.Empty;
+
+                var purgatorySearch = (from item in ontologyEntries where string.Equals(item.Name, "purgatory", StringComparison.InvariantCultureIgnoreCase) select item.Identifier).ToList();
+                if (purgatorySearch.Count > 0)
+                    purgatoryTermID = purgatorySearch.FirstOrDefault();
 
                 using (var writer = new StreamWriter(new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)))
                 {
@@ -547,6 +567,9 @@ namespace OBODataConverter
 
                     if (OutputOptions.IncludeDefinition)
                         columnHeaders.Add("Definition");
+
+                    if (OutputOptions.IncludeComment)
+                        columnHeaders.Add("Comment");
 
                     if (OutputOptions.IncludeGrandparentTerms && !OutputOptions.IncludeParentTerms)
                     {
@@ -572,8 +595,7 @@ namespace OBODataConverter
 
                     foreach (var ontologyTerm in ontologyEntries)
                     {
-                        if (OutputOptions.ExcludeObsolete &&
-                            ontologyTerm.Definition.StartsWith("obsolete", StringComparison.InvariantCultureIgnoreCase))
+                        if (OutputOptions.ExcludeObsolete && ontologyTerm.IsObsolete)
                         {
                             continue;
                         }
@@ -584,8 +606,16 @@ namespace OBODataConverter
 
                             if (OutputOptions.IncludeParentTerms)
                             {
-                                lineOut.Add(string.Empty);
-                                lineOut.Add(string.Empty);
+                                if (ontologyTerm.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
+                                {
+                                    lineOut.Add(string.Empty);      // Parent term name
+                                    lineOut.Add(string.Empty);      // Parent term ID
+                                }
+                                else
+                                {
+                                    lineOut.Add(string.Empty);      // Parent term name
+                                    lineOut.Add(string.Empty);      // Parent term ID
+                                }
                             }
 
                             writer.WriteLine(string.Join("\t", lineOut));
@@ -598,13 +628,23 @@ namespace OBODataConverter
 
                             if (ancestor == null || ancestor.ParentTerms.Count == 0 || !OutputOptions.IncludeGrandparentTerms)
                             {
-                                // No grandparents (or grandparents disabled)
+                                // No grandparents (or grandparents are disabled)
                                 var lineOut = OntologyTermWithParents(ontologyTerm, parentTerm);
 
                                 if (OutputOptions.IncludeGrandparentTerms)
                                 {
-                                    lineOut.Add(string.Empty);
-                                    lineOut.Add(string.Empty);
+
+                                    if (ancestor != null && ancestor.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
+                                    {
+                                        lineOut.Add(string.Empty);      // Grandparent term name
+                                        lineOut.Add(string.Empty);      // Grandparent term ID
+                                    }
+                                    else
+                                    {
+                                        lineOut.Add(string.Empty);      // Grandparent term name
+                                        lineOut.Add(string.Empty);      // Grandparent term ID
+                                    }
+
                                 }
 
                                 writer.WriteLine(string.Join("\t", lineOut));

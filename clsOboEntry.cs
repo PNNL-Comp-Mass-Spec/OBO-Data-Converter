@@ -87,7 +87,7 @@ namespace OBODataConverter
         {
             mIdentifier = identifier;
             Name = name;
-            Definition = String.Empty;
+            Definition = string.Empty;
             Comment = string.Empty;
             IsLeaf = isLeaf;
 
