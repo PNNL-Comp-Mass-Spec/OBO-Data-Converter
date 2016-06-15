@@ -13,28 +13,29 @@ http://omics.pnl.gov/software/obo-data-converter
 OBODataConverter.exe
  InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/Def] [/StripQuotes] [/Com] [/NoObsolete]
 
-<p>The input file is the OBO file to convert</p>
+The input file is the OBO file to convert
 
-<p>Optionally use /O to specify the output path<br>
-If not provided the output file will have extension .txt or .txt.new</p>
+Optionally use /O to specify the output path
+If not provided the output file will have extension .txt or .txt.new
 
-<p>Use /PK to specify the string to append to the ontology term identifier when creating the primary key for the Term_PK column. By default uses /PK:MS1</p>
+Use /PK to specify the string to append to the ontology term identifier 
+when creating the primary key for the Term_PK column. By default uses /PK:MS1
 
-<p>By default the output file includes parent terms; remove them with /NoP<br>
-By default the output file includes grandparent terms; remove them with /NoG<br>
-Using /NoP auto-enables /NoG</p>
+By default the output file includes parent terms; remove them with /NoP
+By default the output file includes grandparent terms; remove them with /NoG
+Using /NoP auto-enables /NoG
 
-<p>By default the output file will not include the term definitions; include them with /Def</p>
+By default the output file will not include the term definitions; include them with /Def
 
-<p>When using /Def, use /StripQuotes to look for definitions of the form<br>
-  <code>"Description of term" [Ontology:Source]</code><br>
-and only include the text between the double quotes as the definition</p>
+When using /Def, use /StripQuotes to look for definitions of the form
+  "Description of term" [Ontology:Source]
+and only include the text between the double quotes as the definition
 
-<p>Using /StripQuotes auto-enables /Def</p>
+Using /StripQuotes auto-enables /Def
 
-<p>By default the output file will not include the term comments; include them with /Com</p>
+By default the output file will not include the term comments; include them with /Com
 
-<p>Use /NoObsolete to exclude obsolete terms</p>
+Use /NoObsolete to exclude obsolete terms
 
 -------------------------------------------------------------------------------
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2016
