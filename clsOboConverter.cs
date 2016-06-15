@@ -438,7 +438,18 @@ namespace OBODataConverter
                             identifier = value;
                             break;
                         case "name":
-                            name = value;
+                            if (value.IndexOf('!') >= 0)
+                            {
+                                // Name term contains \!
+                                // Replace that with !
+                                // Inform the user that we made this change
+                                name = value.Replace(@"\!", "!");
+                                ReportMessage(@" ... auto-replaced \! with ! in " + value);
+                            }
+                            else
+                            {
+                                name = value;
+                            }
                             break;
                         case "comment":
                             comment = value;

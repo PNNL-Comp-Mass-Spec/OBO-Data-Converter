@@ -1,4 +1,7 @@
 OBO Data Converter Revision History
 
+Version 1.0.6010; June 15, 2016
+	- Auto-replace \! with ! in term names
+
 Version 1.0.5938; April 4, 2016
 	- Initial release
