@@ -12,6 +12,8 @@ namespace OBODataConverter
 
         public const string DEFAULT_PRIMARY_KEY_SUFFIX = "MS1";
 
+        private const int AUTO_REPLACE_MESSAGE_THRESHOLD = 5;
+
         #endregion
 
         #region "Structs"
@@ -62,10 +64,17 @@ namespace OBODataConverter
         private readonly List<string> mErrorMessages;
         private readonly List<string> mWarningMessages;
 
+        private readonly Dictionary<string, string> mNameReplacements;
+        /// <summary>
+        /// Tracks auto-replacement messages
+        /// </summary>
+        /// <remarks>Keys are the auto-replacement type and values are the number of times that replacement has been applied</remarks>
+        private readonly Dictionary<string, int> mNameReplacementCountsByType;
+
         #endregion
 
         #region "Properties"
-        
+
         /// <summary>
         /// List of recent error messages
         /// </summary>
@@ -122,6 +131,12 @@ namespace OBODataConverter
             mErrorMessages = new List<string>();
             mWarningMessages = new List<string>();
 
+            mNameReplacements = new Dictionary<string, string> {
+                {@"\!", "!"}
+            };
+
+            mNameReplacementCountsByType = new Dictionary<string, int>();
+
             OutputOptions = DefaultOutputOptions();
         }
 
@@ -167,7 +182,7 @@ namespace OBODataConverter
                     return false;
                 }
 
-                ReportMessage("Parsing  " + oboFile.FullName);
+                ReportMessage("Parsing " + oboFile.FullName);
 
                 FileInfo outputFile;
                 if (string.IsNullOrWhiteSpace(outputFilePath))
@@ -199,12 +214,6 @@ namespace OBODataConverter
                     // Make a list of identifiers that are parents of other terms
                     var parentNodes = new SortedSet<string>();
 
-                    /*
-                    var timings = new List<KeyValuePair<TimeSpan, string>>();                    
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    */
-
                     foreach (var ontologyTerm in ontologyEntries)
                     {
                         foreach (var parentTerm in ontologyTerm.ParentTerms)
@@ -214,63 +223,35 @@ namespace OBODataConverter
                         }
                     }
 
-                    /*
-                    stopwatch.Stop();                    
-                    timings.Add(new KeyValuePair<TimeSpan, string>(stopwatch.Elapsed, "Populated parentNodes"));
-                    
-                    stopwatch.Reset();
-                    stopwatch.Start();
-                    */
-
                     // Update IsLeaf for the ontology entries
                     // An entry is a leaf node if no other nodes reference it as a parent
                     foreach (var ontologyTerm in ontologyEntries)
                     {
                         ontologyTerm.IsLeaf = !parentNodes.Contains(ontologyTerm.Identifier);
                     }
-
-                    /*
-                    stopwatch.Stop();
-                    timings.Add(new KeyValuePair<TimeSpan, string>(stopwatch.Elapsed, "Updated IsLeaf using parentNodes"));
-
-                    stopwatch.Reset();
-                    stopwatch.Start();
-
-                    // Update IsLeaf for the ontology entries
-                    // An entry is a leaf node if no other nodes reference it as a parent
-                    foreach (var ontologyTerm in ontologyEntries)
-                    {
-                        var currentTerm = ontologyTerm;
-
-                        var query =
-                            (from item in ontologyEntries
-                             where item.ParentTerms.ContainsKey(currentTerm.Identifier)
-                             select item);
-
-                        var isLeaf = !query.Any();
-
-                        if (currentTerm.IsLeaf != isLeaf)
-                        {
-                            ReportError("Logic error; isLeaf disageement");
-                        }
-                    }
-
-                    stopwatch.Stop();
-                    timings.Add(new KeyValuePair<TimeSpan, string>(stopwatch.Elapsed, "Updated IsLeaf using Linq"));
-
-                    Console.WriteLine("{0,-15} {1}", "Msec for task", "Task");
                     
-                    foreach (var timingEntry in timings)
-                    {
-                        Console.WriteLine("{0,10:0.000}      {1}", timingEntry.Key.TotalMilliseconds, timingEntry.Value);
-                    }
-                    */
                 }
 
+                var autoReplacementsOverThreshold =
+                    (from item in mNameReplacementCountsByType
+                     where item.Value > AUTO_REPLACE_MESSAGE_THRESHOLD
+                     select item).ToList();
+
+                if (autoReplacementsOverThreshold.Count > 0)
+                {
+                    Console.WriteLine();
+                    foreach (var replacementItem in autoReplacementsOverThreshold)
+                    {
+                        ReportMessage(" ... " + replacementItem.Key + " " + replacementItem.Value + " times");
+                    }
+                }
+
+                Console.WriteLine();
                 var success = WriteOboInfoToFile(ontologyEntries, outputFile);
 
                 if (success)
                 {
+                    Console.WriteLine();
                     ReportMessage("Conversion is complete");
                 }
 
@@ -360,6 +341,43 @@ namespace OBODataConverter
 
         }
 
+        private string AutoReplaceText
+            (string value,
+             Dictionary<string, string> replacementList,
+             IDictionary<string, int> replacementCountsByType)
+        {
+            var updatedValue = value;
+
+            foreach (var replacementItem in replacementList)
+            {
+                if (!updatedValue.Contains(replacementItem.Key))
+                {
+                    continue;
+                }
+
+                // Term contains text that we want to replace, for example replace \! with !
+                // Replace the text and possibly inform the user that we made this change
+                updatedValue = updatedValue.Replace(replacementItem.Key, replacementItem.Value);
+
+                var replacementMsg = @"auto-replaced " + replacementItem.Key + " with " + replacementItem.Value;
+
+                int previousCount;
+                if (!replacementCountsByType.TryGetValue(replacementMsg, out previousCount))
+                {
+                    previousCount = 0;
+                    replacementCountsByType.Add(replacementMsg, 0);
+                }
+
+                replacementCountsByType[replacementMsg] = previousCount + 1;
+
+                if (previousCount < AUTO_REPLACE_MESSAGE_THRESHOLD)
+                    ReportMessage(@" ... " + replacementMsg + " in " + value);
+            }
+
+            return updatedValue;
+
+        }
+
         private static byte BoolToTinyInt(bool value)
         {
             if (value)
@@ -438,18 +456,7 @@ namespace OBODataConverter
                             identifier = value;
                             break;
                         case "name":
-                            if (value.IndexOf('!') >= 0)
-                            {
-                                // Name term contains \!
-                                // Replace that with !
-                                // Inform the user that we made this change
-                                name = value.Replace(@"\!", "!");
-                                ReportMessage(@" ... auto-replaced \! with ! in " + value);
-                            }
-                            else
-                            {
-                                name = value;
-                            }
+                            name = AutoReplaceText(value, mNameReplacements, mNameReplacementCountsByType);                            
                             break;
                         case "comment":
                             comment = value;
@@ -564,7 +571,7 @@ namespace OBODataConverter
             {
                 throw new Exception("Exception in ParseTerm at line " + lineNumber + ": " + ex.Message, ex);
             }
-        }
+        }        
 
         private void ReportError(string message)
         {
@@ -576,7 +583,7 @@ namespace OBODataConverter
         {
             OnMessage(new MessageEventArgs(message));
         }
-        
+
         private void ReportWarning(string message)
         {
             OnWarningMessage(new MessageEventArgs(message));
@@ -745,7 +752,7 @@ namespace OBODataConverter
 
 
         }
-        
+
         #region "Events"
 
         public event MessageEventHandler ErrorEvent;
