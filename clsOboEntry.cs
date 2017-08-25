@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace OBODataConverter
 {
@@ -38,16 +36,10 @@ namespace OBODataConverter
         /// </remarks>
         private readonly Dictionary<string, udtParentTypeInfo> mParentTerms;
 
-        public string Identifier 
-        {
-            get 
-            { 
-                return mIdentifier; 
-            }
-        }
+        public string Identifier => mIdentifier;
 
         public string Name { get; set; }
-        
+
         public string Definition { get; set; }
 
         public string Comment { get; set; }
@@ -58,13 +50,7 @@ namespace OBODataConverter
         /// <remarks>
         /// Keys are parent term ids and values are parent term names
         /// </remarks>
-        public Dictionary<string, udtParentTypeInfo> ParentTerms
-        { 
-            get 
-            {
-                return mParentTerms; 
-            }
-        }
+        public Dictionary<string, udtParentTypeInfo> ParentTerms => mParentTerms;
 
         public bool IsLeaf { get; set; }
         public bool IsObsolete { get; set; }
@@ -73,8 +59,8 @@ namespace OBODataConverter
         /// Constructor
         /// </summary>
         /// <param name="identifier"></param>
-        public OboEntry(string identifier) : this(identifier, String.Empty)
-        {            
+        public OboEntry(string identifier) : this(identifier, string.Empty)
+        {
         }
 
         /// <summary>

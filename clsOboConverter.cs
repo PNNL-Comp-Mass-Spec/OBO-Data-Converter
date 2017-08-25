@@ -82,10 +82,7 @@ namespace OBODataConverter
         /// <summary>
         /// String appended to the ontology term identifier when creating the primary key for the Term_PK column
         /// </summary>
-        public string PrimaryKeySuffix
-        {
-            get { return mPrimaryKeySuffix; }
-        }
+        public string PrimaryKeySuffix => mPrimaryKeySuffix;
 
         #endregion
 
@@ -425,7 +422,7 @@ namespace OBODataConverter
                             identifier = value;
                             break;
                         case "name":
-                            name = AutoReplaceText(value, mNameReplacements, mNameReplacementCountsByType);                            
+                            name = AutoReplaceText(value, mNameReplacements, mNameReplacementCountsByType);
                             break;
                         case "comment":
                             comment = value;
@@ -448,10 +445,7 @@ namespace OBODataConverter
                             break;
                         case "is_a":
 
-                            string parentTermId;
-                            string parentTermName;
-
-                            if (!SplitKeyValuePair(value.Trim(), '!', "is_a", lineNumber, out parentTermId, out parentTermName))
+                            if (!SplitKeyValuePair(value.Trim(), '!', "is_a", lineNumber, out var parentTermId, out var parentTermName))
                             {
                                 continue;
                             }
@@ -473,18 +467,12 @@ namespace OBODataConverter
                             // relationship: part_of MS:1000458 ! source
                             // relationship: has_units UO:0000187 ! percent
 
-                            string relationshipTypeAndParent;
-                            string relationshipValue;
-
-                            if (!SplitKeyValuePair(value.Trim(), '!', "relationshipDef", lineNumber, out relationshipTypeAndParent, out relationshipValue))
+                            if (!SplitKeyValuePair(value.Trim(), '!', "relationshipDef", lineNumber, out var relationshipTypeAndParent, out var relationshipValue))
                             {
                                 continue;
                             }
 
-                            string relationshipType;
-                            string relationshipParentTermName;
-
-                            if (!SplitKeyValuePair(relationshipTypeAndParent.Trim(), ' ', "relationshipTypeAndParent", lineNumber, out relationshipType, out relationshipParentTermName))
+                            if (!SplitKeyValuePair(relationshipTypeAndParent.Trim(), ' ', "relationshipTypeAndParent", lineNumber, out var relationshipType, out var relationshipParentTermName))
                             {
                                 continue;
                             }
@@ -572,7 +560,7 @@ namespace OBODataConverter
             return true;
         }
 
-        private bool WriteOboInfoToFile(List<OboEntry> ontologyEntries, FileInfo outputFile)
+        private bool WriteOboInfoToFile(IReadOnlyCollection<OboEntry> ontologyEntries, FileSystemInfo outputFile)
         {
 
             try
