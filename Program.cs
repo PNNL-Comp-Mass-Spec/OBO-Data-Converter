@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FileProcessor;
+using PRISM;
 
 namespace OBODataConverter
 {
@@ -57,9 +58,9 @@ namespace OBODataConverter
                     OutputOptions = mOutputOptions
                 };
 
-                converter.ErrorEvent += converter_ErrorEvent;
-                converter.MessageEvent += converter_MessageEvent;
-                converter.WarningEvent += converter_WarningEvent;
+                converter.ErrorEvent += Converter_ErrorEvent;
+                converter.StatusEvent += Converter_StatusEvent;
+                converter.WarningEvent += Converter_WarningEvent;
 
                 success = converter.ConvertOboFile(mInputFilePath, mOutputFilePath);
 
@@ -79,22 +80,18 @@ namespace OBODataConverter
 
         }
 
-        static void converter_ErrorEvent(object sender, MessageEventArgs e)
+        private static void Converter_ErrorEvent(string message, Exception ex)
         {
-            ShowErrorMessage(e.Message);
+            ShowErrorMessage(message);
         }
 
-        static void converter_MessageEvent(object sender, MessageEventArgs e)
+        private static void Converter_StatusEvent(string message)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine(message);
         }
-
-        static void converter_WarningEvent(object sender, MessageEventArgs e)
+        private static void Converter_WarningEvent(string message)
         {
-            if (e.Message.StartsWith("Warning", StringComparison.InvariantCultureIgnoreCase))
-                Console.WriteLine(e.Message);
-            else
-                Console.WriteLine("Warning: " + e.Message);
+            ConsoleMsgUtils.ShowWarning(message);
         }
 
         private static string GetAppVersion()
@@ -188,46 +185,34 @@ namespace OBODataConverter
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Error parsing the command line parameters: " + Environment.NewLine + ex.Message);
+                ShowErrorMessage("Error parsing the command line parameters", ex);
             }
 
             return false;
         }
 
-        private static void ShowErrorMessage(string strMessage)
+        private static void ShowErrorMessage(string message, Exception ex = null)
         {
-            const string strSeparator = "------------------------------------------------------------------------------";
-
-            Console.WriteLine();
-            Console.WriteLine(strSeparator);
-            Console.WriteLine(strMessage);
-            Console.WriteLine(strSeparator);
-            Console.WriteLine();
-
-            WriteToErrorStream(strMessage);
+            ConsoleMsgUtils.ShowError(message, ex);
         }
 
-        private static void ShowErrorMessage(string strTitle, IEnumerable<string> items)
+        private static void ShowErrorMessage(string message, IReadOnlyCollection<string> additionalInfo)
         {
-            const string strSeparator = "------------------------------------------------------------------------------";
-            string strMessage = null;
-
-            Console.WriteLine();
-            Console.WriteLine(strSeparator);
-            Console.WriteLine(strTitle);
-            strMessage = strTitle + ":";
-
-            foreach (var item in items)
+            if (additionalInfo == null || additionalInfo.Count == 0)
             {
-                Console.WriteLine("   " + item);
-                strMessage += " " + item;
+                ConsoleMsgUtils.ShowError(message);
+                return;
             }
-            Console.WriteLine(strSeparator);
-            Console.WriteLine();
 
-            WriteToErrorStream(strMessage);
+            var formattedMessage = message + ":";
+
+            foreach (var item in additionalInfo)
+            {
+                formattedMessage += Environment.NewLine + "  " + item;
+            }
+
+            ConsoleMsgUtils.ShowError(formattedMessage, true, false);
         }
-
 
         private static void ShowProgramHelp()
         {
@@ -282,37 +267,6 @@ namespace OBODataConverter
             }
 
         }
-
-        private static void WriteToErrorStream(string strErrorMessage)
-        {
-            try
-            {
-                using (var swErrorStream = new System.IO.StreamWriter(Console.OpenStandardError()))
-                {
-                    swErrorStream.WriteLine(strErrorMessage);
-                }
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch
-            {
-                // Ignore errors here
-            }
-        }
-
-        static void ShowErrorMessage(string message, bool pauseAfterError)
-        {
-            Console.WriteLine();
-            Console.WriteLine("===============================================");
-
-            Console.WriteLine(message);
-
-            if (pauseAfterError)
-            {
-                Console.WriteLine("===============================================");
-                System.Threading.Thread.Sleep(1500);
-            }
-        }
-
 
     }
 }

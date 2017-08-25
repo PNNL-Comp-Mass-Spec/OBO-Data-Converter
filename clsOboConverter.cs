@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using PRISM;
 
 namespace OBODataConverter
 {
-    class clsOboConverter
+    class clsOboConverter : clsEventNotifier
     {
         #region "Constants"
 
@@ -61,10 +62,8 @@ namespace OBODataConverter
 
         private readonly Regex mQuotedDefinitionMatcher;
 
-        private readonly List<string> mErrorMessages;
-        private readonly List<string> mWarningMessages;
-
         private readonly Dictionary<string, string> mNameReplacements;
+
         /// <summary>
         /// Tracks auto-replacement messages
         /// </summary>
@@ -74,31 +73,6 @@ namespace OBODataConverter
         #endregion
 
         #region "Properties"
-
-        /// <summary>
-        /// List of recent error messages
-        /// </summary>
-        /// <remarks>Old messages are cleared when ConvertOboFile is called</remarks>
-        public List<string> ErrorMessages
-        {
-            get
-            {
-                return mErrorMessages;
-            }
-        }
-
-        /// <summary>
-        /// List of recent warning messages
-        /// </summary>
-        /// <remarks>Old messages are cleared when ConvertOboFile is called</remarks>
-        public List<string> WarningMessages
-        {
-            get
-            {
-                return mWarningMessages;
-            }
-        }
-
 
         /// <summary>
         /// Output file options
@@ -127,9 +101,6 @@ namespace OBODataConverter
                 mPrimaryKeySuffix = primaryKeySuffix;
 
             mQuotedDefinitionMatcher = new Regex(@"""(?<Definition>[^""]+)"" +\[.+\]", RegexOptions.Compiled);
-
-            mErrorMessages = new List<string>();
-            mWarningMessages = new List<string>();
 
             mNameReplacements = new Dictionary<string, string> {
                 {@"\!", "!"}
@@ -163,14 +134,12 @@ namespace OBODataConverter
         public bool ConvertOboFile(string oboFilePath, string outputFilePath)
         {
             var lineNumber = 0;
-            mErrorMessages.Clear();
-            mWarningMessages.Clear();
 
             try
             {
                 if (string.IsNullOrWhiteSpace(oboFilePath))
                 {
-                    ReportError("oboFilePath is empty; nothing to convert");
+                    OnErrorEvent("oboFilePath is empty; nothing to convert");
                     return false;
                 }
 
@@ -178,11 +147,11 @@ namespace OBODataConverter
 
                 if (!oboFile.Exists)
                 {
-                    ReportError("Source obo file not found: " + oboFilePath);
+                    OnErrorEvent("Source obo file not found: " + oboFilePath);
                     return false;
                 }
 
-                ReportMessage("Parsing " + oboFile.FullName);
+                OnStatusEvent("Parsing " + oboFile.FullName);
 
                 FileInfo outputFile;
                 if (string.IsNullOrWhiteSpace(outputFilePath))
@@ -229,7 +198,7 @@ namespace OBODataConverter
                     {
                         ontologyTerm.IsLeaf = !parentNodes.Contains(ontologyTerm.Identifier);
                     }
-                    
+
                 }
 
                 var autoReplacementsOverThreshold =
@@ -242,7 +211,7 @@ namespace OBODataConverter
                     Console.WriteLine();
                     foreach (var replacementItem in autoReplacementsOverThreshold)
                     {
-                        ReportMessage(" ... " + replacementItem.Key + " " + replacementItem.Value + " times");
+                        OnStatusEvent(" ... " + replacementItem.Key + " " + replacementItem.Value + " times");
                     }
                 }
 
@@ -252,14 +221,14 @@ namespace OBODataConverter
                 if (success)
                 {
                     Console.WriteLine();
-                    ReportMessage("Conversion is complete");
+                    OnStatusEvent("Conversion is complete");
                 }
 
                 return success;
             }
             catch (Exception ex)
             {
-                ReportError("Exception in ConvertOboFile at line " + lineNumber + ": " + ex.Message);
+                OnErrorEvent("Exception in ConvertOboFile at line " + lineNumber + ": " + ex.Message);
                 return false;
             }
         }
@@ -285,7 +254,7 @@ namespace OBODataConverter
 
             if (string.IsNullOrWhiteSpace(oboFile.DirectoryName))
             {
-                ReportError("Unable to determine parent directory of " + oboFile.FullName);
+                OnErrorEvent("Unable to determine parent directory of " + oboFile.FullName);
                 return string.Empty;
             }
 
@@ -303,7 +272,7 @@ namespace OBODataConverter
         {
             if (parentTerms.ContainsKey(parentTermId))
             {
-                ReportWarning("Parent term specified twice; ignoring " + parentTermId + " for line " + lineNumber + ": " + dataLine);
+                OnWarningEvent("Parent term specified twice; ignoring " + parentTermId + " for line " + lineNumber + ": " + dataLine);
                 return;
             }
 
@@ -371,7 +340,7 @@ namespace OBODataConverter
                 replacementCountsByType[replacementMsg] = previousCount + 1;
 
                 if (previousCount < AUTO_REPLACE_MESSAGE_THRESHOLD)
-                    ReportMessage(@" ... " + replacementMsg + " in " + value);
+                    OnStatusEvent(@" ... " + replacementMsg + " in " + value);
             }
 
             return updatedValue;
@@ -537,7 +506,7 @@ namespace OBODataConverter
                                     AddParentTerm(parentTerms, relationshipType, relationshipParentTermName, relationshipValue, lineNumber, dataLine);
                                     break;
                                 default:
-                                    ReportWarning("Unknown relationship type " + relationshipType + " at line " + lineNumber + ": " + dataLine);
+                                    OnWarningEvent("Unknown relationship type " + relationshipType + " at line " + lineNumber + ": " + dataLine);
                                     break;
                             }
                             break;
@@ -547,7 +516,7 @@ namespace OBODataConverter
                             break;
 
                         default:
-                            ReportWarning("Unknown key " + key + " at line " + lineNumber + ": " + dataLine);
+                            OnWarningEvent("Unknown key " + key + " at line " + lineNumber + ": " + dataLine);
                             break;
                     }
                 }
@@ -571,23 +540,6 @@ namespace OBODataConverter
             {
                 throw new Exception("Exception in ParseTerm at line " + lineNumber + ": " + ex.Message, ex);
             }
-        }        
-
-        private void ReportError(string message)
-        {
-            OnErrorMessage(new MessageEventArgs(message));
-            mErrorMessages.Add(message);
-        }
-
-        private void ReportMessage(string message)
-        {
-            OnMessage(new MessageEventArgs(message));
-        }
-
-        private void ReportWarning(string message)
-        {
-            OnWarningMessage(new MessageEventArgs(message));
-            mWarningMessages.Add(message);
         }
 
         private bool SplitKeyValuePair(string data, char delimiter, string dataDescription, int lineNumber, out string key, out string value)
@@ -604,9 +556,9 @@ namespace OBODataConverter
                 }
 
                 if (string.IsNullOrWhiteSpace(dataDescription))
-                    ReportWarning(delimName + " not found in line " + lineNumber + ": " + data);
+                    OnWarningEvent(delimName + " not found in line " + lineNumber + ": " + data);
                 else
-                    ReportWarning(delimName + " not found in " + dataDescription + " for line " + lineNumber + ": " + data);
+                    OnWarningEvent(delimName + " not found in " + dataDescription + " for line " + lineNumber + ": " + data);
 
                 key = null;
                 value = null;
@@ -625,7 +577,7 @@ namespace OBODataConverter
 
             try
             {
-                ReportMessage("Creating " + outputFile.FullName);
+                OnStatusEvent("Creating " + outputFile.FullName);
 
                 var purgatoryTermID = string.Empty;
 
@@ -746,40 +698,12 @@ namespace OBODataConverter
             }
             catch (Exception ex)
             {
-                ReportError("Error writing to file " + outputFile.FullName + ": " + ex.Message);
+                OnErrorEvent("Error writing to file " + outputFile.FullName + ": " + ex.Message);
                 return false;
             }
 
 
         }
 
-        #region "Events"
-
-        public event MessageEventHandler ErrorEvent;
-        public event MessageEventHandler MessageEvent;
-        public event MessageEventHandler WarningEvent;
-
-        #endregion
-
-        #region "Event Handlers"
-
-        private void OnErrorMessage(MessageEventArgs e)
-        {
-            if (ErrorEvent != null)
-                ErrorEvent(this, e);
-        }
-
-        private void OnMessage(MessageEventArgs e)
-        {
-            if (MessageEvent != null)
-                MessageEvent(this, e);
-        }
-        private void OnWarningMessage(MessageEventArgs e)
-        {
-            if (WarningEvent != null)
-                WarningEvent(this, e);
-        }
-
-        #endregion
     }
 }
