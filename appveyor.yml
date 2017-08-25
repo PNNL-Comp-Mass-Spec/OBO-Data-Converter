@@ -1,0 +1,12 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+before_build:
+- cmd: nuget.exe restore OBODataConverter.sln
+build:
+  project: OBODataConverter.sln
+  verbosity: minimal
+artifacts:
+- path: bin
+  name: OBO-Data-Converter
