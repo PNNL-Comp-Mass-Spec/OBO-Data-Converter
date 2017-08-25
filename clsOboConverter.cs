@@ -327,8 +327,7 @@ namespace OBODataConverter
 
                 var replacementMsg = @"auto-replaced " + replacementItem.Key + " with " + replacementItem.Value;
 
-                int previousCount;
-                if (!replacementCountsByType.TryGetValue(replacementMsg, out previousCount))
+                if (!replacementCountsByType.TryGetValue(replacementMsg, out var previousCount))
                 {
                     previousCount = 0;
                     replacementCountsByType.Add(replacementMsg, 0);
@@ -408,10 +407,7 @@ namespace OBODataConverter
                     if (string.IsNullOrWhiteSpace(dataLine))
                         break;
 
-                    string key;
-                    string value;
-
-                    if (!SplitKeyValuePair(dataLine, ':', string.Empty, lineNumber, out key, out value))
+                    if (!SplitKeyValuePair(dataLine, ':', string.Empty, lineNumber, out var key, out var value))
                     {
                         continue;
                     }
@@ -421,12 +417,15 @@ namespace OBODataConverter
                         case "id":
                             identifier = value;
                             break;
+
                         case "name":
                             name = AutoReplaceText(value, mNameReplacements, mNameReplacementCountsByType);
                             break;
+
                         case "comment":
                             comment = value;
                             break;
+
                         case "def":
                             if (OutputOptions.StripQuotesFromDefinition)
                             {
@@ -440,9 +439,11 @@ namespace OBODataConverter
 
                             definition = value;
                             break;
+
                         case "xref":
-                            // Ignore xref
+                            // Ignore
                             break;
+
                         case "is_a":
 
                             if (!SplitKeyValuePair(value.Trim(), '!', "is_a", lineNumber, out var parentTermId, out var parentTermName))
@@ -454,14 +455,17 @@ namespace OBODataConverter
                             break;
 
                         case "synonym":
-                            // Ignore synonym
+                            // Ignore
                             break;
+
                         case "replaced_by":
-                            // Ignore replaced_by
+                            // Ignore
                             break;
+
                         case "alt_id":
-                            // Ignore ALT_ID
+                            // Ignore
                             break;
+
                         case "relationship":
 
                             // relationship: part_of MS:1000458 ! source
@@ -501,6 +505,10 @@ namespace OBODataConverter
 
                         case "is_obsolete":
                             isObsolete = true;
+                            break;
+
+                        case "property_value":
+                            // Ignore
                             break;
 
                         default:
