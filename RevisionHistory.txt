@@ -2,7 +2,9 @@ OBO Data Converter Revision History
 
 Version 1.0.6445; August 24, 2017
 	- Report events using clsEventNotifier
+	- Use clsParseCommandLine in PRISM.dll
 	- Display messages using ConsoleMsgUtils in PRISM.dll
+	- Ignore tag property_value
 
 Version 1.0.6444; August 23, 2017
 	- Update to .NET 4.6.2
