@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FileProcessor;
 using PRISM;
 
 namespace OBODataConverter
@@ -16,7 +15,7 @@ namespace OBODataConverter
     /// </remarks>
     class Program
     {
-        public const string PROGRAM_DATE = "June 15, 2016";
+        public const string PROGRAM_DATE = "August 24, 2017";
 
         private static string mInputFilePath;
         private static string mOutputFilePath;
@@ -25,7 +24,7 @@ namespace OBODataConverter
 
         static int Main(string[] args)
         {
-            var objParseCommandLine = new FileProcessor.clsParseCommandLine();
+            var objParseCommandLine = new clsParseCommandLine();
 
             mInputFilePath = string.Empty;
             mOutputFilePath = string.Empty;
@@ -96,17 +95,17 @@ namespace OBODataConverter
 
         private static string GetAppVersion()
         {
-            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + " (" + PROGRAM_DATE + ")";
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + " (" + PROGRAM_DATE + ")";
         }
 
         private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine objParseCommandLine)
         {
             // Returns True if no problems; otherwise, returns false
-            var lstValidParameters = new List<string> { 
-                "I", "O", 
-                "PK", "NoP", "NoG", 
-                "Def", "Definition", "StripQuotes", 
-                "Com", "Comm", "Comment", 
+            var lstValidParameters = new List<string> {
+                "I", "O",
+                "PK", "NoP", "NoG",
+                "Def", "Definition", "StripQuotes",
+                "Com", "Comm", "Comment",
                 "NoObsolete"};
 
             try
@@ -125,7 +124,7 @@ namespace OBODataConverter
                     return false;
                 }
 
-                // Query objParseCommandLine to see if various parameters are present						
+                // Query objParseCommandLine to see if various parameters are present
                 if (objParseCommandLine.NonSwitchParameterCount > 0)
                 {
                     mInputFilePath = objParseCommandLine.RetrieveNonSwitchParameter(0);
