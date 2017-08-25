@@ -1,0 +1,129 @@
+Term_PK	Term_Name	Identifier	Is_Leaf	Definition	Comment	Parent_term_name	Parent_term_ID	GrandParent_term_name	GrandParent_term_ID
+MS:0000000MS1	Proteomics Standards Initiative Mass Spectrometry Vocabularies	MS:0000000	1	Proteomics Standards Initiative Mass Spectrometry Vocabularies.			
+MS:1000001MS1	sample number	MS:1000001	1	A reference number relevant to the sample under study.		sample attribute	MS:1000548		
+MS:1000002MS1	sample name	MS:1000002	1	A reference string relevant to the sample under study.		sample attribute	MS:1000548		
+MS:1000003MS1	sample state	MS:1000003	0	The chemical phase of a pure sample, or the state of a mixed sample.		sample attribute	MS:1000548		
+MS:1000004MS1	sample mass	MS:1000004	1	Total mass of sample used.		sample attribute	MS:1000548		
+MS:1000004MS1	sample mass	MS:1000004	1	Total mass of sample used.		gram	UO:0000021		
+MS:1000005MS1	sample volume	MS:1000005	1	Total volume of solution used.		sample attribute	MS:1000548		
+MS:1000005MS1	sample volume	MS:1000005	1	Total volume of solution used.		milliliter	UO:0000098		
+MS:1000006MS1	sample concentration	MS:1000006	1	Concentration of sample in picomol/ul, femtomol/ul or attomol/ul solution used.		sample attribute	MS:1000548		
+MS:1000006MS1	sample concentration	MS:1000006	1	Concentration of sample in picomol/ul, femtomol/ul or attomol/ul solution used.		gram per liter	UO:0000175		
+MS:1000007MS1	inlet type	MS:1000007	0	The nature of the sample inlet.		source	MS:1000458		
+MS:1000008MS1	ionization type	MS:1000008	0	The method by which gas phase ions are generated from the sample.		source	MS:1000458		
+MS:1000009MS1	ionization mode	MS:1000009	1	OBSOLETE Whether positive or negative ions are selected for analysis by the spectrometer.	This term was made obsolete because it was replaced by scan polarity (MS:1000465).		
+MS:1000010MS1	analyzer type	MS:1000010	1	OBSOLETE The common name of the particular analyzer stage being described. Synonym of mass analyzer, should be obsoleted.	This former purgatory term was made obsolete.		
+MS:1000011MS1	mass resolution	MS:1000011	1	Smallest mass difference between two equal magnitude peaks so that the valley between them is a specified fraction of the peak height.		scan attribute	MS:1000503		
+MS:1000012MS1	resolution measurement method	MS:1000012	0	Which of the available standard measures is used to define whether two peaks are separate.		measurement method	MS:1000596		
+MS:1000013MS1	resolution type	MS:1000013	1	OBSOLETE Specify the nature of resolution for the mass analyzer. Resolution is usually either constant with respect to m/z or proportional to m/z.	This former purgatory term was made obsolete.		
+MS:1000014MS1	accuracy	MS:1000014	1	Accuracy is the degree of conformity of a measured mass to its actual value.		mass analyzer attribute	MS:1000480		
+MS:1000014MS1	accuracy	MS:1000014	1	Accuracy is the degree of conformity of a measured mass to its actual value.		m/z	MS:1000040	unit	UO:0000000
+MS:1000014MS1	accuracy	MS:1000014	1	Accuracy is the degree of conformity of a measured mass to its actual value.		parts per million	UO:0000169		
+MS:1000015MS1	scan rate	MS:1000015	1	Rate in Th/sec for scanning analyzers.		scan attribute	MS:1000503		
+MS:1000015MS1	scan rate	MS:1000015	1	Rate in Th/sec for scanning analyzers.		Th/s	MS:1000807		
+MS:1000016MS1	scan start time	MS:1000016	1	The time that an analyzer started a scan, relative to the start of the MS run.		scan attribute	MS:1000503		
+MS:1000016MS1	scan start time	MS:1000016	1	The time that an analyzer started a scan, relative to the start of the MS run.		PSM-level attribute	MS:1002345		
+MS:1000016MS1	scan start time	MS:1000016	1	The time that an analyzer started a scan, relative to the start of the MS run.		second	UO:0000010		
+MS:1000016MS1	scan start time	MS:1000016	1	The time that an analyzer started a scan, relative to the start of the MS run.		minute	UO:0000031		
+MS:1000017MS1	Scan Function	MS:1000017	1	OBSOLETE Describes the type of mass analysis being performed. Two primary modes are: typical acquisition over a range of masses (Mass Scan), and Selected Ion Detection. The primary difference is that Selected Ion Detection produces a single value for the signal at the selected mass rather than producing a mass spectrum.	OBSOLETE This former purgatory term was made obsolete.		
+MS:1000018MS1	scan direction	MS:1000018	0	Direction in terms of m/z of the scan for scanning analyzers (low to high, or high to low).		scan	MS:1000441		
+MS:1000019MS1	scan law	MS:1000019	0	Describes the function in control of the m/z scan (for scanning instruments). Commonly the scan function is linear, but in principle any function can be used.		scan	MS:1000441		
+MS:1000020MS1	scanning method	MS:1000020	1	Describes the acquisition data type produced by a tandem mass spectrometry experiment.	OBSOLETE This former purgatory term was made obsolete.		
+MS:1000021MS1	reflectron state	MS:1000021	0	Status of the reflectron, turned on or off.		mass analyzer attribute	MS:1000480		
+MS:1000022MS1	TOF Total Path Length	MS:1000022	1	The length of the field free drift space in a time of flight mass spectrometer.		mass analyzer attribute	MS:1000480		
+MS:1000022MS1	TOF Total Path Length	MS:1000022	1	The length of the field free drift space in a time of flight mass spectrometer.		meter	UO:0000008		
+MS:1000023MS1	isolation width	MS:1000023	1	OBSOLETE The total width (i.e. not half for plus-or-minus) of the gate applied around a selected precursor ion.	This former purgatory term was made obsolete.	m/z	MS:1000040	unit	UO:0000000
+MS:1000024MS1	final MS exponent	MS:1000024	1	Final MS level achieved when performing PFF with the ion trap (e.g. MS E10).		mass analyzer attribute	MS:1000480		
+MS:1000025MS1	magnetic field strength	MS:1000025	1	A property of space that produces a force on a charged particle equal to qv x B where q is the particle charge and v its velocity.		mass analyzer attribute	MS:1000480		
+MS:1000025MS1	magnetic field strength	MS:1000025	1	A property of space that produces a force on a charged particle equal to qv x B where q is the particle charge and v its velocity.		tesla	UO:0000228		
+MS:1000026MS1	detector type	MS:1000026	0	Type of detector used in the mass spectrometer.		detector	MS:1000453		
+MS:1000027MS1	detector acquisition mode	MS:1000027	1	Method by which detector signal is acquired by the data system.		detector	MS:1000453		
+MS:1000028MS1	detector resolution	MS:1000028	1	The resolving power of the detector to detect the smallest difference between two ions so that the valley between them is a specified fraction of the peak height.		detector attribute	MS:1000481		
+MS:1000029MS1	sampling frequency	MS:1000029	1	The rate of signal sampling (measurement) with respect to time.		detector attribute	MS:1000481		
+MS:1000029MS1	sampling frequency	MS:1000029	1	The rate of signal sampling (measurement) with respect to time.		hertz	UO:0000106		
+MS:1000030MS1	vendor	MS:1000030	1	OBSOLETE Name of instrument vendor.	This term was made obsolete because it was replaced by instrument model (MS:1000031).		
+MS:1000031MS1	instrument model	MS:1000031	1	Instrument model name not including the vendor's name.		instrument	MS:1000463		
+MS:1000032MS1	customization	MS:1000032	1	Free text description of a single customization made to the instrument; for several modifications, use several entries.		instrument attribute	MS:1000496		
+MS:1000033MS1	deisotoping	MS:1000033	1	The removal of isotope peaks to represent the fragment ion as one data point and is commonly done to reduce complexity. It is done in conjunction with the charge state deconvolution.		data processing action	MS:1000543		
+MS:1000034MS1	charge deconvolution	MS:1000034	1	The determination of the mass of an ion based on the mass spectral peaks that represent multiple-charge ions.		data processing action	MS:1000543		
+MS:1000035MS1	peak picking	MS:1000035	1	Spectral peak processing conducted on the acquired data to convert profile data to centroided data.		data processing action	MS:1000543		
+MS:1000036MS1	scan mode	MS:1000036	1	OBSOLETE.	This term was made obsolete because .		
+MS:1000037MS1	polarity	MS:1000037	1	OBSOLETE Terms to describe the polarity setting of the instrument.	This term was made obsolete because it was redundant with the Pato Ontology term polarity (UO:0002186).		
+MS:1000038MS1	minute	MS:1000038	1	OBSOLETE Acquisition time in minutes.	This term was made obsolete because it was redundant with Unit Ontology minute (UO:0000031).		
+MS:1000039MS1	second	MS:1000039	1	OBSOLETE Acquisition time in seconds.	This term was made obsolete because it was redundant with Unit Ontology second (UO:0000010).		
+MS:1000040MS1	m/z	MS:1000040	0	Three-character symbol m/z is used to denote the quantity formed by dividing the mass of an ion in unified atomic mass units by its charge number (regardless of sign). The symbol is written in italicized lower case letters with no spaces. Note 1: The term mass-to-charge-ratio is deprecated. Mass-to-charge ratio has been used for the abscissa of a mass spectrum, although the quantity measured is not the quotient of the ion's mass to its electric charge. The three-character symbol m/z is recommended for the quantity that is the independent variable in a mass spectrum Note 2: The proposed unit thomson (Th) is deprecated.		unit	UO:0000000		
+MS:1000041MS1	charge state	MS:1000041	1	The charge state of the ion, single or multiple and positive or negatively charged.		ion selection attribute	MS:1000455		
+MS:1000042MS1	peak intensity	MS:1000042	1	Intensity of ions as measured by the height or area of a peak in a mass spectrum.		ion selection attribute	MS:1000455		
+MS:1000042MS1	peak intensity	MS:1000042	1	Intensity of ions as measured by the height or area of a peak in a mass spectrum.		number of detector counts	MS:1000131		
+MS:1000042MS1	peak intensity	MS:1000042	1	Intensity of ions as measured by the height or area of a peak in a mass spectrum.		percent of base peak	MS:1000132		
+MS:1000042MS1	peak intensity	MS:1000042	1	Intensity of ions as measured by the height or area of a peak in a mass spectrum.		counts per second	MS:1000814		
+MS:1000042MS1	peak intensity	MS:1000042	1	Intensity of ions as measured by the height or area of a peak in a mass spectrum.		percent of base peak times 100	MS:1000905		
+MS:1000042MS1	peak intensity	MS:1000042	1	Intensity of ions as measured by the height or area of a peak in a mass spectrum.		absorbance unit	UO:0000269		
+MS:1000042MS1	peak intensity	MS:1000042	1	Intensity of ions as measured by the height or area of a peak in a mass spectrum.		peak	MS:1000231		
+MS:1000043MS1	intensity unit	MS:1000043	1	Intensity units are commonly arbitrary. Detected in counts per second (cps) when using counting detectors, but measured in volts when using analog detectors.		unit	UO:0000000		
+MS:1000044MS1	dissociation method	MS:1000044	1	Fragmentation method used for dissociation or fragmentation.		precursor activation	MS:1000456		
+MS:1000045MS1	collision energy	MS:1000045	1	Energy for an ion experiencing collision with a stationary gas particle resulting in dissociation of the ion.		precursor activation attribute	MS:1000510		
+MS:1000045MS1	collision energy	MS:1000045	1	Energy for an ion experiencing collision with a stationary gas particle resulting in dissociation of the ion.		electronvolt	UO:0000266		
+MS:1000046MS1	energy unit	MS:1000046	1	OBSOLETE Energy units are represented in either eV or Joules.	This term was made obsolete because it was redundant with the Unit Ontology term energy unit (UO:0000111).	unit	UO:0000000		
+MS:1000047MS1	emulsion	MS:1000047	1	State if the sample is in emulsion form.		sample state	MS:1000003	sample attribute	MS:1000548
+MS:1000048MS1	gaseous sample state	MS:1000048	1	State if the sample is in gaseous form.		sample state	MS:1000003	sample attribute	MS:1000548
+MS:1000049MS1	liquid sample state	MS:1000049	1	State if the sample is in liquid form.		sample state	MS:1000003	sample attribute	MS:1000548
+MS:1000050MS1	solid sample state	MS:1000050	1	State if the sample is in solid form.		sample state	MS:1000003	sample attribute	MS:1000548
+MS:1000051MS1	solution	MS:1000051	1	State if the sample is in solution form.		sample state	MS:1000003	sample attribute	MS:1000548
+MS:1000052MS1	suspension	MS:1000052	1	State if the sample is in suspension form.		sample state	MS:1000003	sample attribute	MS:1000548
+MS:1000053MS1	sample batch	MS:1000053	1	Sample batch lot identifier.		sample attribute	MS:1000548		
+MS:1000054MS1	chromatography	MS:1000054	1	OBSOLETE Chromatographic conditions used to obtain the sample.	This former purgatory term was made obsolete.		
+MS:1000055MS1	continuous flow fast atom bombardment	MS:1000055	1	Fast atom bombardment ionization in which the analyte in solution is entrained in a flowing liquid matrix.		inlet type	MS:1000007	source	MS:1000458
+MS:1000056MS1	direct inlet	MS:1000056	1	The sample is directly inserted into the ion source, usually on the end of a heatable probe.		inlet type	MS:1000007	source	MS:1000458
+MS:1000057MS1	electrospray inlet	MS:1000057	1	Inlet used for introducing the liquid sample into an electrospray ionization source.		inlet type	MS:1000007	source	MS:1000458
+MS:1000058MS1	flow injection analysis	MS:1000058	1	Sample is directly injected or infused into the ionization source.		inlet type	MS:1000007	source	MS:1000458
+MS:1000059MS1	inductively coupled plasma	MS:1000059	1	A gas discharge ion source in which the energy to the plasma is supplied by electromagnetic induction.		inlet type	MS:1000007	source	MS:1000458
+MS:1000060MS1	infusion	MS:1000060	1	The continuous flow of solution of a sample into the ionization source.		inlet type	MS:1000007	source	MS:1000458
+MS:1000061MS1	jet separator	MS:1000061	1	A device that separates carrier gas from gaseous analyte molecules on the basis of diffusivity.		inlet type	MS:1000007	source	MS:1000458
+MS:1000062MS1	membrane separator	MS:1000062	1	A device to separate carrier molecules from analyte molecules on the basis of ease of diffusion across a semipermeable membrane.		inlet type	MS:1000007	source	MS:1000458
+MS:1000063MS1	moving belt	MS:1000063	1	Continuous moving surface in the form of a belt which passes through an ion source carrying analyte molecules.		inlet type	MS:1000007	source	MS:1000458
+MS:1000064MS1	moving wire	MS:1000064	1	Continuous moving surface in the form of a wire which passes through an ion source carrying analyte molecules.		inlet type	MS:1000007	source	MS:1000458
+MS:1000065MS1	open split	MS:1000065	1	A division of flowing stream of liquid into two streams.		inlet type	MS:1000007	source	MS:1000458
+MS:1000066MS1	particle beam	MS:1000066	1	Method for generating ions from a solution of an analyte.		inlet type	MS:1000007	source	MS:1000458
+MS:1000067MS1	reservoir	MS:1000067	1	A sample inlet method involving a reservoir.		inlet type	MS:1000007	source	MS:1000458
+MS:1000068MS1	septum	MS:1000068	1	A disc composed of a flexible material that seals the entrance to the reservoir. Can also be entrance to the vacuum chamber.		inlet type	MS:1000007	source	MS:1000458
+MS:1000069MS1	thermospray inlet	MS:1000069	1	A method for generating gas phase ions from a solution of an analyte by rapid heating of the sample.		inlet type	MS:1000007	source	MS:1000458
+MS:1000070MS1	atmospheric pressure chemical ionization	MS:1000070	1	Chemical ionization that takes place at atmospheric pressure as opposed to the reduced pressure is normally used for chemical ionization.		atmospheric pressure ionization	MS:1000240		
+MS:1000071MS1	chemical ionization	MS:1000071	1	The formation of a new ion by the reaction of a neutral species with an ion. The process may involve transfer of an electron, a proton or other charged species between the reactants. When a positive ion results from chemical ionization the term may be used without qualification. When a negative ion results the term negative ion chemical ionization should be used. Note that this term is not synonymous with chemi-ionization.		ionization type	MS:1000008	source	MS:1000458
+MS:1000072MS1	Electronic Ionization	MS:1000072	1	OBSOLETE The ionization of an atom or molecule by electrons that are typically accelerated to energies between 50 and 150 eV. Usually 70 eV electrons are used to produce positive ions. The term 'electron impact' is not recommended.	This term was made obsolete because it was replaced by electron ionization (MS:1000389).		
+MS:1000073MS1	electrospray ionization	MS:1000073	1	A process in which ionized species in the gas phase are produced from an analyte-containing solution via highly charged fine droplets, by means of spraying the solution from a narrow-bore needle tip at atmospheric pressure in the presence of a high electric field. When a pressurized gas is used to aid in the formation of a stable spray, the term pneumatically assisted electrospray ionization is used. The term ion spray is not recommended.		ionization type	MS:1000008	source	MS:1000458
+MS:1000074MS1	fast atom bombardment ionization	MS:1000074	1	The ionization of any species by the interaction of a focused beam of neutral atoms having a translational energy of several thousand eV with a sample that is typically dissolved in a solvent matrix. See also secondary ionization.		ionization type	MS:1000008	source	MS:1000458
+MS:1000075MS1	matrix-assisted laser desorption ionization	MS:1000075	1	The formation of gas-phase ions from molecules that are present in a solid or solvent matrix that is irradiated with a pulsed laser. See also laser desorption/ionization.		desorption ionization	MS:1000247		
+MS:1000076MS1	negative ion mode	MS:1000076	1	OBSOLETE.	This term was made obsolete because it was replaced by negative scan (MS:1000129).		
+MS:1000077MS1	positive ion mode	MS:1000077	1	OBSOLETE.	This term was made obsolete because it was replaced by positive scan (MS:1000130).		
+MS:1000078MS1	axial ejection linear ion trap	MS:1000078	1	A linear ion trap mass spectrometer where ions are ejected along the axis of the analyzer.		linear ion trap	MS:1000291		
+MS:1000079MS1	fourier transform ion cyclotron resonance mass spectrometer	MS:1000079	1	A mass spectrometer based on the principle of ion cyclotron resonance in which an ion in a magnetic field moves in a circular orbit at a frequency characteristic of its m/z value. Ions are coherently excited to a larger radius orbit using a pulse of radio frequency energy and their image charge is detected on receiver plates as a time domain signal. Fourier transformation of the time domain signal results in a frequency domain signal which is converted to a mass spectrum based in the inverse relationship between frequency and m/z.		mass analyzer type	MS:1000443		
+MS:1000080MS1	magnetic sector	MS:1000080	1	A device that produces a magnetic field perpendicular to a charged particle beam that deflects the beam to an extent that is proportional to the particle momentum per unit charge. For a monoenergetic beam, the deflection is proportional to m/z.		mass analyzer type	MS:1000443		
+MS:1000081MS1	quadrupole	MS:1000081	1	A mass spectrometer that consists of four parallel rods whose centers form the corners of a square and whose opposing poles are connected. The voltage applied to the rods is a superposition of a static potential and a sinusoidal radio frequency potential. The motion of an ion in the x and y dimensions is described by the Matthieu equation whose solutions show that ions in a particular m/z range can be transmitted along the z axis.		mass analyzer type	MS:1000443		
+MS:1000082MS1	quadrupole ion trap	MS:1000082	1	Quadrupole Ion Trap mass analyzer captures the ions in a three dimensional ion trap and then selectively ejects them by varying the RF and DC potentials.		ion trap	MS:1000264		
+MS:1000083MS1	radial ejection linear ion trap	MS:1000083	1	A linear ion trap mass spectrometer where ions are ejected along the radius of the analyzer.		linear ion trap	MS:1000291		
+MS:1000084MS1	time-of-flight	MS:1000084	1	Instrument that separates ions by m/z in a field-free region after acceleration to a fixed acceleration energy.		mass analyzer type	MS:1000443		
+MS:1000085MS1	baseline	MS:1000085	1	An attribute of resolution when recording the detector response in absence of the analyte.		resolution measurement method	MS:1000012	measurement method	MS:1000596
+MS:1000086MS1	full width at half-maximum	MS:1000086	1	A measure of resolution represented as width of the peak at half peak height.		resolution measurement method	MS:1000012	measurement method	MS:1000596
+MS:1000087MS1	ten percent valley	MS:1000087	1	An attribute of resolution when the ratio between adjacent signals is 10% of the signal height.		resolution measurement method	MS:1000012	measurement method	MS:1000596
+MS:1000088MS1	constant	MS:1000088	1	OBSOLETE When resolution is constant with respect to m/z.	This child of the former purgatory term resolution type was made obsolete.		
+MS:1000089MS1	proportional	MS:1000089	1	OBSOLETE When resolution is proportional with respect to m/z.	This child of the former purgatory term resolution type was made obsolete.		
+MS:1000090MS1	mass scan	MS:1000090	1	OBSOLETE A variation of instrument where a selected mass is scanned.	This child of the former purgatory term Scan Function was made obsolete.		
+MS:1000091MS1	selected ion detection	MS:1000091	1	OBSOLETE Please see Single Ion Monitoring.	This child of the former purgatory term Scan Function was made obsolete.		
+MS:1000092MS1	decreasing m/z scan	MS:1000092	1	High to low direction in terms of m/z of the scan for scanning analyzers.		scan direction	MS:1000018	scan	MS:1000441
+MS:1000093MS1	increasing m/z scan	MS:1000093	1	Low to high direction in terms of m/z of the scan for scanning analyzers.		scan direction	MS:1000018	scan	MS:1000441
+MS:1000094MS1	exponential	MS:1000094	1	The mass scan is done in exponential mode.		scan law	MS:1000019	scan	MS:1000441
+MS:1000095MS1	linear	MS:1000095	1	OBSOLETE The mass scan is done in linear mode.	This term was made obsolete because it was redundant with the Pato Ontology term linear (UO:0001199).	scan law	MS:1000019	scan	MS:1000441
+MS:1000096MS1	quadratic	MS:1000096	1	The mass scan is done in quadratic mode.		scan law	MS:1000019	scan	MS:1000441
+MS:1000097MS1	constant neutral mass loss	MS:1000097	1	OBSOLETE A spectrum formed of all product ions that have been produced with a selected m/z decrement from any precursor ions. The spectrum shown correlates to the precursor ion spectrum. See also neutral loss spectrum.	This former purgatory term was made obsolete.		
+MS:1000098MS1	multiple ion monitoring	MS:1000098	1	OBSOLETE Data acquired when monitoring the ion current of a few specific m/z values. Remap to MS:1000205 -Selected Ion Monitoring.	This former purgatory term was made obsolete.		
+MS:1000099MS1	multiple reaction monitoring	MS:1000099	1	OBSOLETE This term is not recommended. See Selected Reaction Monitoring.	This term was made obsolete because it was merged with selected reaction monitoring (MS:1000206).		
+MS:1000100MS1	precursor ion scan	MS:1000100	1	OBSOLETE The specific scan function or process that will record a precursor ion spectrum.	This former purgatory term was made obsolete.		
+MS:1000101MS1	product ion scan	MS:1000101	1	OBSOLETE The specific scan function or process that records product ion spectrum.	This former purgatory term was made obsolete.		
+MS:1000102MS1	single ion monitoring	MS:1000102	1	OBSOLETE The operation of a mass spectrometer to monitor a single ion rather than scanning entire mass spectrum.	This term was made obsolete because it was replaced by single ion monitoring (MS:100205).		
+MS:1000103MS1	single reaction monitoring	MS:1000103	1	OBSOLETE This term is not recommended. See Selected Reaction Monitoring.	This term was made obsolete because it was replaced by selected reaction monitoring (MS:1000206).		
+MS:1000104MS1	None ??	MS:1000104	1	OBSOLETE None.	This term was made obsolete because .		
+MS:1000105MS1	reflectron off	MS:1000105	1	Reflectron is off.		reflectron state	MS:1000021	mass analyzer attribute	MS:1000480
+MS:1000106MS1	reflectron on	MS:1000106	1	Reflectron is on.		reflectron state	MS:1000021	mass analyzer attribute	MS:1000480
+MS:1000107MS1	channeltron	MS:1000107	1	A horn-shaped (or cone-shaped) continuous dynode particle multiplier. The ion strikes the inner surface of the device and induces the production of secondary electrons that in turn impinge on the inner surfaces to produce more secondary electrons. This avalanche effect produces an increase in signal in the final measured current pulse.		detector type	MS:1000026	detector	MS:1000453
+MS:1000108MS1	conversion dynode electron multiplier	MS:1000108	1	A surface that is held at high potential so that ions striking the surface produce electrons that are subsequently detected.		conversion dynode	MS:1000346		
