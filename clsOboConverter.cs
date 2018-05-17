@@ -381,8 +381,9 @@ namespace OBODataConverter
         private List<string> OntologyTermWithParents(OboEntry ontologyTerm, KeyValuePair<string, OboEntry.udtParentTypeInfo> parentTerm)
         {
             var dataColumns = OntologyTermNoParents(ontologyTerm);
-            dataColumns.Add(parentTerm.Value.ParentTermName);             // Parent term name
-            dataColumns.Add(parentTerm.Key);                              // Parent term Identifier
+            dataColumns.Add(parentTerm.Value.ParentType.ToString());    // Parent term type
+            dataColumns.Add(parentTerm.Value.ParentTermName);           // Parent term name
+            dataColumns.Add(parentTerm.Key);                            // Parent term Identifier
 
             return dataColumns;
         }
@@ -607,12 +608,14 @@ namespace OBODataConverter
 
                     if (OutputOptions.IncludeParentTerms)
                     {
+                        columnHeaders.Add("Parent_term_type");
                         columnHeaders.Add("Parent_term_name");
                         columnHeaders.Add("Parent_term_ID");
                     }
 
                     if (OutputOptions.IncludeGrandparentTerms)
                     {
+                        columnHeaders.Add("GrandParent_term_type");
                         columnHeaders.Add("GrandParent_term_name");
                         columnHeaders.Add("GrandParent_term_ID");
                     }
@@ -634,11 +637,13 @@ namespace OBODataConverter
                             {
                                 if (ontologyTerm.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
                                 {
+                                    lineOut.Add(string.Empty);      // Parent term type
                                     lineOut.Add(string.Empty);      // Parent term name
                                     lineOut.Add(string.Empty);      // Parent term ID
                                 }
                                 else
                                 {
+                                    lineOut.Add(string.Empty);      // Parent term type
                                     lineOut.Add(string.Empty);      // Parent term name
                                     lineOut.Add(string.Empty);      // Parent term ID
                                 }
@@ -662,11 +667,13 @@ namespace OBODataConverter
 
                                     if (ancestor != null && ancestor.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
                                     {
+                                        lineOut.Add(string.Empty);      // Grandparent term type
                                         lineOut.Add(string.Empty);      // Grandparent term name
                                         lineOut.Add(string.Empty);      // Grandparent term ID
                                     }
                                     else
                                     {
+                                        lineOut.Add(string.Empty);      // Grandparent term type
                                         lineOut.Add(string.Empty);      // Grandparent term name
                                         lineOut.Add(string.Empty);      // Grandparent term ID
                                     }
@@ -680,8 +687,9 @@ namespace OBODataConverter
                             foreach (var grandParent in ancestor.ParentTerms)
                             {
                                 var lineOut = OntologyTermWithParents(ontologyTerm, parentTerm);
-                                lineOut.Add(grandParent.Value.ParentTermName);
-                                lineOut.Add(grandParent.Key);
+                                lineOut.Add(grandParent.Value.ParentType.ToString());   // Grandparent term type
+                                lineOut.Add(grandParent.Value.ParentTermName);          // Grandparent term name
+                                lineOut.Add(grandParent.Key);                           // Grandparent term ID
 
                                 writer.WriteLine(string.Join("\t", lineOut));
                             }
