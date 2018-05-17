@@ -157,6 +157,7 @@ namespace OBODataConverter
                 // Read the data from the Obo file
                 // Track them using this list
                 var ontologyEntries = new List<OboEntry>();
+                var leafNodeCount = 0;
 
                 using (var reader = new StreamReader(new FileStream(oboFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
@@ -191,7 +192,11 @@ namespace OBODataConverter
                     // An entry is a leaf node if no other nodes reference it as a parent
                     foreach (var ontologyTerm in ontologyEntries)
                     {
-                        ontologyTerm.IsLeaf = !parentNodes.Contains(ontologyTerm.Identifier);
+                        if (parentNodes.Contains(ontologyTerm.Identifier))
+                            continue;
+
+                        ontologyTerm.IsLeaf = true;
+                        leafNodeCount++;
                     }
 
                 }
@@ -211,6 +216,9 @@ namespace OBODataConverter
                 }
 
                 Console.WriteLine();
+                OnStatusEvent(string.Format("Found {0:N0} terms, of which {1:N0} are leaf nodes", ontologyEntries.Count, leafNodeCount));
+                Console.WriteLine();
+
                 var success = WriteOboInfoToFile(ontologyEntries, outputFile);
 
                 if (success)
