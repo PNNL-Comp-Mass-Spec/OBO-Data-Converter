@@ -24,7 +24,7 @@ namespace OBODataConverter
 
         static int Main(string[] args)
         {
-            var objParseCommandLine = new clsParseCommandLine();
+            var commandLineParser = new clsParseCommandLine();
 
             mInputFilePath = string.Empty;
             mOutputFilePath = string.Empty;
@@ -38,14 +38,14 @@ namespace OBODataConverter
 
                 var success = false;
 
-                if (objParseCommandLine.ParseCommandLine())
+                if (commandLineParser.ParseCommandLine())
                 {
-                    if (SetOptionsUsingCommandLineParameters(objParseCommandLine))
+                    if (SetOptionsUsingCommandLineParameters(commandLineParser))
                         success = true;
                 }
 
                 if (!success ||
-                    objParseCommandLine.NeedToShowHelp ||
+                    commandLineParser.NeedToShowHelp ||
                     string.IsNullOrWhiteSpace(mInputFilePath))
                 {
                     ShowProgramHelp();
@@ -98,7 +98,7 @@ namespace OBODataConverter
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + " (" + PROGRAM_DATE + ")";
         }
 
-        private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine objParseCommandLine)
+        private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine commandLineParser)
         {
             // Returns True if no problems; otherwise, returns false
             var lstValidParameters = new List<string> {
@@ -111,10 +111,10 @@ namespace OBODataConverter
             try
             {
                 // Make sure no invalid parameters are present
-                if (objParseCommandLine.InvalidParametersPresent(lstValidParameters))
+                if (commandLineParser.InvalidParametersPresent(lstValidParameters))
                 {
                     var badArguments = new List<string>();
-                    foreach (var item in objParseCommandLine.InvalidParameters(lstValidParameters))
+                    foreach (var item in commandLineParser.InvalidParameters(lstValidParameters))
                     {
                         badArguments.Add("/" + item);
                     }
@@ -124,58 +124,57 @@ namespace OBODataConverter
                     return false;
                 }
 
-                // Query objParseCommandLine to see if various parameters are present
-                if (objParseCommandLine.NonSwitchParameterCount > 0)
+                // Query commandLineParser to see if various parameters are present
+                if (commandLineParser.NonSwitchParameterCount > 0)
                 {
-                    mInputFilePath = objParseCommandLine.RetrieveNonSwitchParameter(0);
+                    mInputFilePath = commandLineParser.RetrieveNonSwitchParameter(0);
                 }
 
-                if (objParseCommandLine.NonSwitchParameterCount > 1)
+                if (commandLineParser.NonSwitchParameterCount > 1)
                 {
-                    mOutputFilePath = objParseCommandLine.RetrieveNonSwitchParameter(1);
+                    mOutputFilePath = commandLineParser.RetrieveNonSwitchParameter(1);
                 }
 
-                string paramValue;
-                if (objParseCommandLine.RetrieveValueForParameter("I", out paramValue))
+                if (commandLineParser.RetrieveValueForParameter("I", out var paramValue))
                 {
                     mInputFilePath = string.Copy(paramValue);
                 }
 
-                if (objParseCommandLine.RetrieveValueForParameter("O", out paramValue))
+                if (commandLineParser.RetrieveValueForParameter("O", out paramValue))
                 {
                     mOutputFilePath = string.Copy(paramValue);
                 }
 
-                if (objParseCommandLine.RetrieveValueForParameter("PK", out paramValue))
+                if (commandLineParser.RetrieveValueForParameter("PK", out paramValue))
                 {
                     mPrimaryKeySuffix = string.Copy(paramValue);
                 }
 
-                if (objParseCommandLine.IsParameterPresent("NoP"))
+                if (commandLineParser.IsParameterPresent("NoP"))
                 {
                     mOutputOptions.IncludeParentTerms = false;
                     mOutputOptions.IncludeGrandparentTerms = false;
                 }
 
-                if (objParseCommandLine.IsParameterPresent("NoG"))
+                if (commandLineParser.IsParameterPresent("NoG"))
                     mOutputOptions.IncludeGrandparentTerms = false;
 
-                if (objParseCommandLine.IsParameterPresent("Def") ||
-                    objParseCommandLine.IsParameterPresent("Definition"))
+                if (commandLineParser.IsParameterPresent("Def") ||
+                    commandLineParser.IsParameterPresent("Definition"))
                     mOutputOptions.IncludeDefinition = true;
 
-                if (objParseCommandLine.IsParameterPresent("StripQuotes"))
+                if (commandLineParser.IsParameterPresent("StripQuotes"))
                 {
                     mOutputOptions.IncludeDefinition = true;
                     mOutputOptions.StripQuotesFromDefinition = true;
                 }
 
-                if (objParseCommandLine.IsParameterPresent("Com") ||
-                    objParseCommandLine.IsParameterPresent("Comm") ||
-                    objParseCommandLine.IsParameterPresent("Comment"))
+                if (commandLineParser.IsParameterPresent("Com") ||
+                    commandLineParser.IsParameterPresent("Comm") ||
+                    commandLineParser.IsParameterPresent("Comment"))
                     mOutputOptions.IncludeComment = true;
 
-                if (objParseCommandLine.IsParameterPresent("NoObsolete"))
+                if (commandLineParser.IsParameterPresent("NoObsolete"))
                 {
                     mOutputOptions.ExcludeObsolete = true;
                 }
