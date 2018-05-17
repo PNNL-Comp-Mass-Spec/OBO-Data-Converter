@@ -10,12 +10,12 @@ namespace OBODataConverter
     /// <remarks>
     /// Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
     ///
-    /// E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
-    /// Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov or http://www.sysbio.org/resources/staff/
+    /// E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
+    /// Website: https://panomics.pnnl.gov/ or https://omics.pnl.gov
     /// </remarks>
     class Program
     {
-        public const string PROGRAM_DATE = "August 24, 2017";
+        public const string PROGRAM_DATE = "May 16, 2018";
 
         private static string mInputFilePath;
         private static string mOutputFilePath;
@@ -219,18 +219,21 @@ namespace OBODataConverter
             try
             {
                 Console.WriteLine();
-                Console.WriteLine("This program reads an Ontology file in the OBO format and converts the data to a tab-delimited text file.");
+                Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
+                                      "This program reads an Ontology file in the OBO format and converts the data to a tab-delimited text file."));
                 Console.WriteLine();
                 Console.WriteLine("Program syntax:" + Environment.NewLine + exeName);
                 Console.WriteLine(" InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/Def] [/StripQuotes] [/Com] [/NoObsolete]");
                 Console.WriteLine();
                 Console.WriteLine("The input file is the OBO file to convert");
                 Console.WriteLine();
-                Console.WriteLine("Optionally use /O to specify the output path");
-                Console.WriteLine("If not provided the output file will have extension .txt or .txt.new");
+                Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
+                                      "Optionally use /O to specify the output path. " +
+                                      "If not provided the output file will have extension .txt or .txt.new"));
                 Console.WriteLine();
-                Console.WriteLine("Use /PK to specify the string to append to the ontology term identifier");
-                Console.WriteLine("when creating the primary key for the Term_PK column. By default uses /PK:MS1");
+                Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
+                                      "Use /PK to specify the string to append to the ontology term identifier" +
+                                      "when creating the primary key for the Term_PK column. By default uses /PK:MS1"));
                 Console.WriteLine();
                 Console.WriteLine("By default the output file includes parent terms; remove them with /NoP");
                 Console.WriteLine("By default the output file includes grandparent terms; remove them with /NoG");
@@ -243,7 +246,8 @@ namespace OBODataConverter
                 Console.WriteLine("and only include the text between the double quotes as the definition");
                 Console.WriteLine("Using /StripQuotes auto-enables /Def");
                 Console.WriteLine();
-                Console.WriteLine("By default the output file will not include the term comments; include them with /Com");
+                Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
+                                      "By default the output file will not include the term comments; include them with /Com"));
                 Console.WriteLine();
                 Console.WriteLine("Use /NoObsolete to exclude obsolete terms");
                 Console.WriteLine();
@@ -251,8 +255,8 @@ namespace OBODataConverter
                 Console.WriteLine("Version: " + GetAppVersion());
                 Console.WriteLine();
 
-                Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com");
-                Console.WriteLine("Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov or http://www.sysbio.org/resources/staff/");
+                Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov");
+                Console.WriteLine("Website: https://panomics.pnnl.gov/ or https://omics.pnl.gov");
                 Console.WriteLine();
 
                 // Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
