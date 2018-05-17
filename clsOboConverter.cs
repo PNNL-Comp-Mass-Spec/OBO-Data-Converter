@@ -483,7 +483,9 @@ namespace OBODataConverter
                             switch (relationshipType)
                             {
                                 case "has_domain":
-                                    // Ignore this relationship type
+                                case "develops_from":
+                                case "related_to":
+                                    // Ignore these relationship types
                                     break;
                                 case "has_order":
                                     break;
@@ -507,6 +509,8 @@ namespace OBODataConverter
                             break;
 
                         case "property_value":
+                        case "created_by":
+                        case "creation_date":
                             // Ignore
                             break;
 
