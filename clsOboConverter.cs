@@ -58,8 +58,6 @@ namespace OBODataConverter
 
         #region "Classwide variables"
 
-        private readonly string mPrimaryKeySuffix;
-
         private readonly Regex mQuotedDefinitionMatcher;
 
         private readonly Dictionary<string, string> mNameReplacements;
@@ -82,7 +80,7 @@ namespace OBODataConverter
         /// <summary>
         /// String appended to the ontology term identifier when creating the primary key for the Term_PK column
         /// </summary>
-        public string PrimaryKeySuffix => mPrimaryKeySuffix;
+        public string PrimaryKeySuffix { get; }
 
         #endregion
 
@@ -93,9 +91,9 @@ namespace OBODataConverter
         public clsOboConverter(string primaryKeySuffix = DEFAULT_PRIMARY_KEY_SUFFIX)
         {
             if (string.IsNullOrWhiteSpace(primaryKeySuffix))
-                mPrimaryKeySuffix = string.Empty;
+                PrimaryKeySuffix = string.Empty;
             else
-                mPrimaryKeySuffix = primaryKeySuffix;
+                PrimaryKeySuffix = primaryKeySuffix;
 
             mQuotedDefinitionMatcher = new Regex(@"""(?<Definition>[^""]+)"" +\[.+\]", RegexOptions.Compiled);
 
@@ -359,7 +357,7 @@ namespace OBODataConverter
 
         private List<string> OntologyTermNoParents(OboEntry ontologyTerm)
         {
-            var suffix = string.IsNullOrWhiteSpace(mPrimaryKeySuffix) ? string.Empty : mPrimaryKeySuffix;
+            var suffix = string.IsNullOrWhiteSpace(PrimaryKeySuffix) ? string.Empty : PrimaryKeySuffix;
 
             var dataColumns = new List<string>
                                 {

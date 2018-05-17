@@ -26,17 +26,7 @@ namespace OBODataConverter
             }
         }
 
-        private readonly string mIdentifier;
-
-        /// <summary>
-        /// Parent Terms
-        /// </summary>
-        /// <remarks>
-        /// Keys are parent term ids and values are parent term names
-        /// </remarks>
-        private readonly Dictionary<string, udtParentTypeInfo> mParentTerms;
-
-        public string Identifier => mIdentifier;
+        public string Identifier { get; }
 
         public string Name { get; set; }
 
@@ -50,18 +40,10 @@ namespace OBODataConverter
         /// <remarks>
         /// Keys are parent term ids and values are parent term names
         /// </remarks>
-        public Dictionary<string, udtParentTypeInfo> ParentTerms => mParentTerms;
+        public Dictionary<string, udtParentTypeInfo> ParentTerms { get; }
 
         public bool IsLeaf { get; set; }
         public bool IsObsolete { get; set; }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="identifier"></param>
-        public OboEntry(string identifier) : this(identifier, string.Empty)
-        {
-        }
 
         /// <summary>
         /// Constructor
@@ -71,29 +53,29 @@ namespace OBODataConverter
         /// <param name="isLeaf"></param>
         public OboEntry(string identifier, string name, bool isLeaf = false)
         {
-            mIdentifier = identifier;
+            Identifier = identifier;
             Name = name;
             Definition = string.Empty;
             Comment = string.Empty;
             IsLeaf = isLeaf;
 
-            mParentTerms = new Dictionary<string, udtParentTypeInfo>();
+            ParentTerms = new Dictionary<string, udtParentTypeInfo>();
         }
 
         public void AddParentTerm(string parentTermID, udtParentTypeInfo parentTermInfo)
         {
-            if (mParentTerms.ContainsKey(parentTermID))
+            if (ParentTerms.ContainsKey(parentTermID))
             {
                 // Parent term already defined
                 return;
             }
 
-            mParentTerms.Add(parentTermID, parentTermInfo);
+            ParentTerms.Add(parentTermID, parentTermInfo);
         }
 
         public override string ToString()
         {
-            return mIdentifier + ": " + Name;
+            return Identifier + ": " + Name;
         }
 
     }
