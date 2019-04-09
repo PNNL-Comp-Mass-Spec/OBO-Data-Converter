@@ -554,18 +554,18 @@ namespace OBODataConverter
             var charIndex = data.IndexOf(delimiter);
             if (charIndex < 0)
             {
-                string delimName;
+                string delimiterName;
                 if (delimiter == ' ')
-                    delimName = "space";
+                    delimiterName = "space";
                 else
                 {
-                    delimName = delimiter.ToString();
+                    delimiterName = delimiter.ToString();
                 }
 
                 if (string.IsNullOrWhiteSpace(dataDescription))
-                    OnWarningEvent(delimName + " not found in line " + lineNumber + ": " + data);
+                    OnWarningEvent(delimiterName + " not found in line " + lineNumber + ": " + data);
                 else
-                    OnWarningEvent(delimName + " not found in " + dataDescription + " for line " + lineNumber + ": " + data);
+                    OnWarningEvent(delimiterName + " not found in " + dataDescription + " for line " + lineNumber + ": " + data);
 
                 key = null;
                 value = null;
