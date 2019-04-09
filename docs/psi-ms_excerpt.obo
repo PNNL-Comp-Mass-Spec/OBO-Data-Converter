@@ -1,13 +1,15 @@
 format-version: 1.2
-data-version: 4.0.14
-date: 28:08:2017 11:45
+data-version: 4.1.25
+date: 06:04:2019 14:50
 saved-by: Gerhard Mayer
 auto-generated-by: OBO-Edit 2.3.1
 import: http://ontologies.berkeleybop.org/pato.obo
 import: http://ontologies.berkeleybop.org/uo.obo
 default-namespace: MS
 namespace-id-rule: * MS:$sequence(7,0,9999999)$
+namespace-id-rule: * PEFF:$sequence(7,0,9999999)$
 remark: namespace: MS
+remark: namespace: PEFF
 remark: coverage: Mass spectrometer output files and spectra interpretation
 remark: creator: Matt Chambers <matt.chambers <-at-> vanderbilt.edu>
 remark: creator: Andreas Bertsch <bertsch <-at-> informatik.uni-tuebingen.de>
@@ -20,8 +22,8 @@ remark: publisher: HUPO Proteomics Standards Initiative Mass Spectrometry Standa
 remark: When appropriate the definition and synonyms of a term are reported exactly as in the chapter 12 of IUPAC orange book. See http://www.iupac.org/projects/2003/2003-056-2-500.html and http://mass-spec.lsu.edu/msterms/index.php/Main_Page
 remark: For any queries contact psidev-ms-vocab@lists.sourceforge.net
 remark: URL: https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo
-remark: This work is licensed under the Creative Commons Attribution 3.0 Unported License.
-remark: To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+remark: This work is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+remark: To view a copy of this license, visit https://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 ontology: ms
 
 [Typedef]
