@@ -15,7 +15,7 @@ namespace OBODataConverter
     /// </remarks>
     class Program
     {
-        public const string PROGRAM_DATE = "May 16, 2018";
+        public const string PROGRAM_DATE = "April 9, 2019";
 
         private static string mInputFilePath;
         private static string mOutputFilePath;
@@ -119,7 +119,7 @@ namespace OBODataConverter
                         badArguments.Add("/" + item);
                     }
 
-                    ShowErrorMessage("Invalid commmand line parameters", badArguments);
+                    ShowErrorMessage("Invalid command line parameters", badArguments);
 
                     return false;
                 }
