@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using PRISM;
 
 namespace OBODataConverter
@@ -15,7 +16,7 @@ namespace OBODataConverter
     /// </remarks>
     class Program
     {
-        public const string PROGRAM_DATE = "April 9, 2019";
+        public const string PROGRAM_DATE = "May 7, 2019";
 
         private static string mInputFilePath;
         private static string mOutputFilePath;
@@ -65,7 +66,7 @@ namespace OBODataConverter
 
                 if (!success)
                 {
-                    ShowErrorMessage("ConvertOboFile returned false");
+                    ConsoleMsgUtils.ShowError("ConvertOboFile returned false");
                 }
             }
             catch (Exception ex)
@@ -81,7 +82,7 @@ namespace OBODataConverter
 
         private static void Converter_ErrorEvent(string message, Exception ex)
         {
-            ShowErrorMessage(message);
+            ConsoleMsgUtils.ShowError(message);
         }
 
         private static void Converter_StatusEvent(string message)
@@ -119,7 +120,7 @@ namespace OBODataConverter
                         badArguments.Add("/" + item);
                     }
 
-                    ShowErrorMessage("Invalid command line parameters", badArguments);
+                    ConsoleMsgUtils.ShowErrors("Invalid command line parameters", badArguments);
 
                     return false;
                 }
@@ -183,38 +184,15 @@ namespace OBODataConverter
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Error parsing the command line parameters", ex);
+                ConsoleMsgUtils.ShowError("Error parsing the command line parameters", ex);
             }
 
             return false;
         }
 
-        private static void ShowErrorMessage(string message, Exception ex = null)
-        {
-            ConsoleMsgUtils.ShowError(message, ex);
-        }
-
-        private static void ShowErrorMessage(string message, IReadOnlyCollection<string> additionalInfo)
-        {
-            if (additionalInfo == null || additionalInfo.Count == 0)
-            {
-                ConsoleMsgUtils.ShowError(message);
-                return;
-            }
-
-            var formattedMessage = message + ":";
-
-            foreach (var item in additionalInfo)
-            {
-                formattedMessage += Environment.NewLine + "  " + item;
-            }
-
-            ConsoleMsgUtils.ShowError(formattedMessage, true, false);
-        }
-
         private static void ShowProgramHelp()
         {
-            var exeName = System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var exeName = Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             try
             {
@@ -265,7 +243,7 @@ namespace OBODataConverter
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error displaying the program syntax: " + ex.Message);
+                ConsoleMsgUtils.ShowError("Error displaying the program syntax", ex);
             }
 
         }
