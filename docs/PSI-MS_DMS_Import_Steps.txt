@@ -1,0 +1,44 @@
+
+== Updating PSI-MS terms using an OBO file ==
+
+Use the following steps to import new PSI-MS terms using a psi-ms OBO file.
+
+# Download the latest OBO file from GitHub
+#* [https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo psi-ms-CV/master/psi-ms.obo]
+#* Also distributed via a mailing list, for example https://sourceforge.net/p/psidev/mailman/message/35158324/
+# Convert the file to tab-delimited text using OBODataConverter.exe
+#* <code>OBODataConverter.exe psi-ms_4.1.33.obo psi-ms_4.1.33_WithDefinition_StripQuotes_IncludeObsolete.txt /Def /StripQuotes /Com /PK:MS1</code>
+# Import <code>psi-ms_4.1.33_WithDefinition_StripQuotes_IncludeObsolete.txt</code> into database Ontology_Lookup on Gigasax
+#* Use SQL Server Management Studio
+#* Right click the database, choose Tasks, then Import Data
+#** Do not use <code>Tasks, Import Flat file</code>; it fails with error "Cannot find patterns in the input file"
+#* Change the Data Source to Flat File Source and click Next
+#* Select the input file, then click Advanced, Suggest Types
+#** Preview 999 rows and pad string columns by 100%
+#** Update column Term_Name to have OutputColumnWidth=255
+#** Update column Definition to have OutputColumnWidth=1500
+#** Update column Comment to have OutputColumnWidth=1000
+#** Update column Parent_Term_Name to have OutputColumnWidth=500
+#***Required due to some long RegEx definitions
+#* Click next, then choose destination: SQL Server Native Client 11
+#* Click next, then define the destination table: [dbo].[T_Tmp_PsiMS_2020Jan]
+#* Click next, next, next, then finish
+#** Will import around 3835 rows
+#* If an error regarding truncated data, note the column name, then
+#** Click Back to return to the Data Source Screen
+#** Expand the column, e.g. expand Term_Name to have OutputColumnWidth=255
+#** Update table T_Tmp_PsiMS_2020Jan in the database to expand that column and to delete all rows
+#** Back on the wizard, click Next to select the destination database and re-define the destination table as: [dbo].[T_Tmp_PsiMS_2020Jan]
+#** Optionally change <code>On truncation (global)</code> to "Ignore"
+#** Click next, next, then finish
+# Call stored procedure AddNewMSTerms to update T_CV_MS
+
+<syntaxHighlight lang="sql">exec AddNewMSTerms 'T_Tmp_PsiMS_2020Jan', @infoOnly=1
+</syntaxHighlight>
+
+Review the updates, then run again with <code>@infoOnly=0</code><br>
+Example output:
+* Updated 240 rows in T_CV_MS using T_Tmp_PsiMS_2020Jan
+* Added 117 new rows to T_CV_MS using T_Tmp_PsiMS_2020Jan
+
+[[Category:Software]]
