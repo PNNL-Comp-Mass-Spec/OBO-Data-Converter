@@ -16,7 +16,7 @@ namespace OBODataConverter
     /// </remarks>
     class Program
     {
-        public const string PROGRAM_DATE = "May 9, 2019";
+        public const string PROGRAM_DATE = "March 27, 2020";
 
         private static string mInputFilePath;
         private static string mOutputFilePath;
