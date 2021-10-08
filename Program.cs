@@ -63,10 +63,13 @@ namespace OBODataConverter
 
                 success = converter.ConvertOboFile(mInputFilePath, mOutputFilePath);
 
-                if (!success)
+                if (success)
                 {
-                    ConsoleMsgUtils.ShowError("ConvertOboFile returned false");
+                    return 0;
                 }
+
+                ConsoleMsgUtils.ShowError("ConvertOboFile returned false");
+                return -1;
             }
             catch (Exception ex)
             {
@@ -74,8 +77,6 @@ namespace OBODataConverter
                 Console.WriteLine(ex.StackTrace);
                 return -1;
             }
-
-            return 0;
         }
 
         private static void Converter_ErrorEvent(string message, Exception ex)
