@@ -4,7 +4,7 @@ namespace OBODataConverter
 {
     public class OboEntry
     {
-        public enum eParentType
+        public enum ParentTypes
         {
             Unknown = 0,
             IsA = 1,
@@ -15,9 +15,9 @@ namespace OBODataConverter
             PartOf = 6
         }
 
-        public struct udtParentTypeInfo
+        public struct ParentTypeInfo
         {
-            public eParentType ParentType;
+            public ParentTypes ParentType;
             public string ParentTermName;
 
             public override string ToString()
@@ -40,7 +40,7 @@ namespace OBODataConverter
         /// <remarks>
         /// Keys are parent term ids and values are parent term names
         /// </remarks>
-        public Dictionary<string, udtParentTypeInfo> ParentTerms { get; }
+        public Dictionary<string, ParentTypeInfo> ParentTerms { get; }
 
         public bool IsLeaf { get; set; }
         public bool IsObsolete { get; set; }
@@ -59,10 +59,10 @@ namespace OBODataConverter
             Comment = string.Empty;
             IsLeaf = isLeaf;
 
-            ParentTerms = new Dictionary<string, udtParentTypeInfo>();
+            ParentTerms = new Dictionary<string, ParentTypeInfo>();
         }
 
-        public void AddParentTerm(string parentTermID, udtParentTypeInfo parentTermInfo)
+        public void AddParentTerm(string parentTermID, ParentTypeInfo parentTermInfo)
         {
             if (ParentTerms.ContainsKey(parentTermID))
             {

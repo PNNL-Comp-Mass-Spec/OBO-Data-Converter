@@ -7,14 +7,14 @@ using PRISM;
 
 namespace OBODataConverter
 {
-    internal class clsOboConverter : EventNotifier
+    internal class OboConverter : EventNotifier
     {
 
         public const string DEFAULT_PRIMARY_KEY_SUFFIX = "MS1";
 
         private const int AUTO_REPLACE_MESSAGE_THRESHOLD = 5;
 
-        public struct udtOutputOptions
+        public struct OutputFileOptions
         {
             /// <summary>
             /// When true, include the ontology definition
@@ -62,7 +62,7 @@ namespace OBODataConverter
         /// <summary>
         /// Output file options
         /// </summary>
-        public udtOutputOptions OutputOptions { get; set; }
+        public OutputFileOptions OutputOptions { get; set; }
 
         /// <summary>
         /// String appended to the ontology term identifier when creating the primary key for the Term_PK column
@@ -73,7 +73,7 @@ namespace OBODataConverter
         /// Constructor
         /// </summary>
         /// <param name="primaryKeySuffix">String appended to the ontology term identifier when creating the primary key for the Term_PK column</param>
-        public clsOboConverter(string primaryKeySuffix = DEFAULT_PRIMARY_KEY_SUFFIX)
+        public OboConverter(string primaryKeySuffix = DEFAULT_PRIMARY_KEY_SUFFIX)
         {
             if (string.IsNullOrWhiteSpace(primaryKeySuffix))
                 PrimaryKeySuffix = string.Empty;
@@ -219,9 +219,9 @@ namespace OBODataConverter
             }
         }
 
-        public static udtOutputOptions DefaultOutputOptions()
+        public static OutputFileOptions DefaultOutputOptions()
         {
-            var outputOptions = new udtOutputOptions()
+            var outputOptions = new OutputFileOptions()
             {
                 IncludeDefinition = false,
                 StripQuotesFromDefinition = false,
@@ -252,7 +252,7 @@ namespace OBODataConverter
             return outputFilePath;
         }
 
-        private void AddParentTerm(IDictionary<string, OboEntry.udtParentTypeInfo> parentTerms, string parentTypeName, string parentTermId, string parentTermName, int lineNumber, string dataLine)
+        private void AddParentTerm(IDictionary<string, OboEntry.ParentTypeInfo> parentTerms, string parentTypeName, string parentTermId, string parentTermName, int lineNumber, string dataLine)
         {
             if (parentTerms.ContainsKey(parentTermId))
             {
@@ -260,31 +260,31 @@ namespace OBODataConverter
                 return;
             }
 
-            var parentType = OboEntry.eParentType.Unknown;
+            var parentType = OboEntry.ParentTypes.Unknown;
 
             switch (parentTypeName)
             {
                 case "is_a":
-                    parentType = OboEntry.eParentType.IsA;
+                    parentType = OboEntry.ParentTypes.IsA;
                     break;
                 case "has_domain":
-                    parentType = OboEntry.eParentType.HasDomain;
+                    parentType = OboEntry.ParentTypes.HasDomain;
                     break;
                 case "has_order":
-                    parentType = OboEntry.eParentType.HasOrder;
+                    parentType = OboEntry.ParentTypes.HasOrder;
                     break;
                 case "has_regexp":
-                    parentType = OboEntry.eParentType.HasRegExp;
+                    parentType = OboEntry.ParentTypes.HasRegExp;
                     break;
                 case "has_units":
-                    parentType = OboEntry.eParentType.HasUnits;
+                    parentType = OboEntry.ParentTypes.HasUnits;
                     break;
                 case "part_of":
-                    parentType = OboEntry.eParentType.PartOf;
+                    parentType = OboEntry.ParentTypes.PartOf;
                     break;
             }
 
-            var parentEntry = new OboEntry.udtParentTypeInfo
+            var parentEntry = new OboEntry.ParentTypeInfo
             {
                 ParentType = parentType,
                 ParentTermName = parentTermName
@@ -363,7 +363,7 @@ namespace OBODataConverter
             return dataColumns;
         }
 
-        private List<string> OntologyTermWithParents(OboEntry ontologyTerm, KeyValuePair<string, OboEntry.udtParentTypeInfo> parentTerm)
+        private List<string> OntologyTermWithParents(OboEntry ontologyTerm, KeyValuePair<string, OboEntry.ParentTypeInfo> parentTerm)
         {
             var dataColumns = OntologyTermNoParents(ontologyTerm);
             dataColumns.Add(parentTerm.Value.ParentType.ToString());    // Parent term type
@@ -382,7 +382,7 @@ namespace OBODataConverter
                 var definition = string.Empty;
                 var comment = string.Empty;
 
-                var parentTerms = new Dictionary<string, OboEntry.udtParentTypeInfo>();
+                var parentTerms = new Dictionary<string, OboEntry.ParentTypeInfo>();
                 var isObsolete = false;
 
                 while (!reader.EndOfStream)

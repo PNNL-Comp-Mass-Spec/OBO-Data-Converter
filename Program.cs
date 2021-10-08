@@ -20,7 +20,7 @@ namespace OBODataConverter
 
         private static string mInputFilePath;
         private static string mOutputFilePath;
-        private static clsOboConverter.udtOutputOptions mOutputOptions;
+        private static OboConverter.OutputFileOptions mOutputOptions;
         private static string mPrimaryKeySuffix;
 
         private static int Main()
@@ -30,9 +30,9 @@ namespace OBODataConverter
             mInputFilePath = string.Empty;
             mOutputFilePath = string.Empty;
 
-            mOutputOptions = clsOboConverter.DefaultOutputOptions();
+            mOutputOptions = OboConverter.DefaultOutputOptions();
 
-            mPrimaryKeySuffix = clsOboConverter.DEFAULT_PRIMARY_KEY_SUFFIX;
+            mPrimaryKeySuffix = OboConverter.DEFAULT_PRIMARY_KEY_SUFFIX;
 
             try
             {
@@ -52,7 +52,7 @@ namespace OBODataConverter
                     return -1;
                 }
 
-                var converter = new clsOboConverter(mPrimaryKeySuffix)
+                var converter = new OboConverter(mPrimaryKeySuffix)
                 {
                     OutputOptions = mOutputOptions
                 };
