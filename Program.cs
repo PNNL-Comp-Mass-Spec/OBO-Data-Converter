@@ -9,14 +9,17 @@ namespace OBODataConverter
     /// This program reads an Ontology file in the OBO format and converts the data to a tab-delimited text file.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
-    ///
+    /// </para>
+    /// <para>
     /// E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
     /// Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics
+    /// </para>
     /// </remarks>
     internal static class Program
     {
-        public const string PROGRAM_DATE = "March 27, 2020";
+        public const string PROGRAM_DATE = "October 8, 2021";
 
         private static string mInputFilePath;
         private static string mOutputFilePath;
