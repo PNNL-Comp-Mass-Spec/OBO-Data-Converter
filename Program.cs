@@ -160,7 +160,9 @@ namespace OBODataConverter
 
                 if (commandLineParser.IsParameterPresent("Def") ||
                     commandLineParser.IsParameterPresent("Definition"))
+                {
                     mOutputOptions.IncludeDefinition = true;
+                }
 
                 if (commandLineParser.IsParameterPresent("StripQuotes"))
                 {
@@ -171,7 +173,9 @@ namespace OBODataConverter
                 if (commandLineParser.IsParameterPresent("Com") ||
                     commandLineParser.IsParameterPresent("Comm") ||
                     commandLineParser.IsParameterPresent("Comment"))
+                {
                     mOutputOptions.IncludeComment = true;
+                }
 
                 if (commandLineParser.IsParameterPresent("NoObsolete"))
                 {
