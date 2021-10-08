@@ -7,7 +7,7 @@ using PRISM;
 
 namespace OBODataConverter
 {
-    class clsOboConverter : EventNotifier
+    internal class clsOboConverter : EventNotifier
     {
         #region "Constants"
 

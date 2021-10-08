@@ -14,7 +14,7 @@ namespace OBODataConverter
     /// E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
     /// Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics
     /// </remarks>
-    class Program
+    internal static class Program
     {
         public const string PROGRAM_DATE = "March 27, 2020";
 
@@ -23,7 +23,7 @@ namespace OBODataConverter
         private static clsOboConverter.udtOutputOptions mOutputOptions;
         private static string mPrimaryKeySuffix;
 
-        static int Main(string[] args)
+        private static int Main()
         {
             var commandLineParser = new clsParseCommandLine();
 
