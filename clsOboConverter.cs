@@ -175,7 +175,6 @@ namespace OBODataConverter
                         }
                     }
 
-
                     // Make a list of identifiers that are parents of other terms
                     var parentNodes = new SortedSet<string>();
 
@@ -198,7 +197,6 @@ namespace OBODataConverter
                         ontologyTerm.IsLeaf = true;
                         leafNodeCount++;
                     }
-
                 }
 
                 var autoReplacementsOverThreshold =
@@ -249,12 +247,10 @@ namespace OBODataConverter
             };
 
             return outputOptions;
-
         }
 
         private string ConstructOutputFilePath(FileInfo oboFile)
         {
-
             if (string.IsNullOrWhiteSpace(oboFile.DirectoryName))
             {
                 OnErrorEvent("Unable to determine parent directory of " + oboFile.FullName);
@@ -310,7 +306,6 @@ namespace OBODataConverter
             };
 
             parentTerms.Add(parentTermId, parentEntry);
-
         }
 
         private string AutoReplaceText
@@ -346,7 +341,6 @@ namespace OBODataConverter
             }
 
             return updatedValue;
-
         }
 
         private static byte BoolToTinyInt(bool value)
@@ -541,7 +535,6 @@ namespace OBODataConverter
                 }
 
                 ontologyEntries.Add(ontologyEntry);
-
             }
             catch (Exception ex)
             {
@@ -581,7 +574,6 @@ namespace OBODataConverter
 
         private bool WriteOboInfoToFile(IReadOnlyCollection<OboEntry> ontologyEntries, FileSystemInfo outputFile)
         {
-
             try
             {
                 OnStatusEvent("Creating " + outputFile.FullName);
@@ -674,7 +666,6 @@ namespace OBODataConverter
 
                                 if (OutputOptions.IncludeGrandparentTerms)
                                 {
-
                                     if (ancestor != null && ancestor.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
                                     {
                                         lineOut.Add(string.Empty);      // Grandparent term type
@@ -687,7 +678,6 @@ namespace OBODataConverter
                                         lineOut.Add(string.Empty);      // Grandparent term name
                                         lineOut.Add(string.Empty);      // Grandparent term ID
                                     }
-
                                 }
 
                                 writer.WriteLine(string.Join("\t", lineOut));
@@ -708,16 +698,12 @@ namespace OBODataConverter
                 } // Using
 
                 return true;
-
             }
             catch (Exception ex)
             {
                 OnErrorEvent("Error writing to file " + outputFile.FullName + ": " + ex.Message);
                 return false;
             }
-
-
         }
-
     }
 }

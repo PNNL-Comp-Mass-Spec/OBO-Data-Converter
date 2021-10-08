@@ -36,7 +36,6 @@ namespace OBODataConverter
 
             try
             {
-
                 var success = false;
 
                 if (commandLineParser.ParseCommandLine())
@@ -77,7 +76,6 @@ namespace OBODataConverter
             }
 
             return 0;
-
         }
 
         private static void Converter_ErrorEvent(string message, Exception ex)
@@ -239,14 +237,11 @@ namespace OBODataConverter
 
                 // Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
                 System.Threading.Thread.Sleep(750);
-
             }
             catch (Exception ex)
             {
                 ConsoleMsgUtils.ShowError("Error displaying the program syntax", ex);
             }
-
         }
-
     }
 }

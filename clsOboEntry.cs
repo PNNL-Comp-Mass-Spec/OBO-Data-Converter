@@ -77,6 +77,5 @@ namespace OBODataConverter
         {
             return Identifier + ": " + Name;
         }
-
     }
 }
