@@ -75,10 +75,7 @@ namespace OBODataConverter
         /// <param name="primaryKeySuffix">String appended to the ontology term identifier when creating the primary key for the Term_PK column</param>
         public OboConverter(string primaryKeySuffix = DEFAULT_PRIMARY_KEY_SUFFIX)
         {
-            if (string.IsNullOrWhiteSpace(primaryKeySuffix))
-                PrimaryKeySuffix = string.Empty;
-            else
-                PrimaryKeySuffix = primaryKeySuffix;
+            PrimaryKeySuffix = string.IsNullOrWhiteSpace(primaryKeySuffix) ? string.Empty : primaryKeySuffix;
 
             mQuotedDefinitionMatcher = new Regex(@"""(?<Definition>[^""]+)"" +\[.+\]", RegexOptions.Compiled);
 
@@ -530,15 +527,10 @@ namespace OBODataConverter
         private bool SplitKeyValuePair(string data, char delimiter, string dataDescription, int lineNumber, out string key, out string value)
         {
             var charIndex = data.IndexOf(delimiter);
+
             if (charIndex < 0)
             {
-                string delimiterName;
-                if (delimiter == ' ')
-                    delimiterName = "space";
-                else
-                {
-                    delimiterName = delimiter.ToString();
-                }
+                var delimiterName = delimiter == ' ' ? "space" : delimiter.ToString();
 
                 if (string.IsNullOrWhiteSpace(dataDescription))
                     OnWarningEvent(delimiterName + " not found in line " + lineNumber + ": " + data);
