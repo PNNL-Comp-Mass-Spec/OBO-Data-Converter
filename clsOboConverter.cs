@@ -9,15 +9,10 @@ namespace OBODataConverter
 {
     internal class clsOboConverter : EventNotifier
     {
-        #region "Constants"
 
         public const string DEFAULT_PRIMARY_KEY_SUFFIX = "MS1";
 
         private const int AUTO_REPLACE_MESSAGE_THRESHOLD = 5;
-
-        #endregion
-
-        #region "Structs"
 
         public struct udtOutputOptions
         {
@@ -54,10 +49,6 @@ namespace OBODataConverter
             public bool ExcludeObsolete;
         }
 
-        #endregion
-
-        #region "Classwide variables"
-
         private readonly Regex mQuotedDefinitionMatcher;
 
         private readonly Dictionary<string, string> mNameReplacements;
@@ -68,10 +59,6 @@ namespace OBODataConverter
         /// <remarks>Keys are the auto-replacement type and values are the number of times that replacement has been applied</remarks>
         private readonly Dictionary<string, int> mNameReplacementCountsByType;
 
-        #endregion
-
-        #region "Properties"
-
         /// <summary>
         /// Output file options
         /// </summary>
@@ -81,8 +68,6 @@ namespace OBODataConverter
         /// String appended to the ontology term identifier when creating the primary key for the Term_PK column
         /// </summary>
         public string PrimaryKeySuffix { get; }
-
-        #endregion
 
         /// <summary>
         /// Constructor
