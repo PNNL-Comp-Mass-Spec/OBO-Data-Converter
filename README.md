@@ -54,11 +54,11 @@ OBODataConverter.exe psi-ms_4.1.33.obo psi-ms_4.1.33_WithDefinition_StripQuotes_
 
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2016 \
 E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov \
-Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/ \
+Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics\
 Source code: https://github.com/PNNL-Comp-Mass-Spec/OBO-Data-Converter
 
 ## License
 
-Licensed under the Apache License, Version 2.0; you may not use this file except 
+Licensed under the Apache License, Version 2.0; you may not use this program except 
 in compliance with the License.  You may obtain a copy of the License at 
 http://www.apache.org/licenses/LICENSE-2.0
