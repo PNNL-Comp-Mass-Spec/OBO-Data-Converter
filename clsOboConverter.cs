@@ -9,6 +9,7 @@ namespace OBODataConverter
 {
     internal class OboConverter : EventNotifier
     {
+        // Ignore Spelling: Obo
 
         public const string DEFAULT_PRIMARY_KEY_SUFFIX = "MS1";
 
@@ -308,7 +309,7 @@ namespace OBODataConverter
                 // Replace the text and possibly inform the user that we made this change
                 updatedValue = updatedValue.Replace(replacementItem.Key, replacementItem.Value);
 
-                var replacementMsg = @"auto-replaced " + replacementItem.Key + " with " + replacementItem.Value;
+                var replacementMsg = "auto-replaced " + replacementItem.Key + " with " + replacementItem.Value;
 
                 if (!replacementCountsByType.TryGetValue(replacementMsg, out var previousCount))
                 {
@@ -319,7 +320,7 @@ namespace OBODataConverter
                 replacementCountsByType[replacementMsg] = previousCount + 1;
 
                 if (previousCount < AUTO_REPLACE_MESSAGE_THRESHOLD)
-                    OnStatusEvent(@" ... " + replacementMsg + " in " + value);
+                    OnStatusEvent(" ... " + replacementMsg + " in " + value);
             }
 
             return updatedValue;
