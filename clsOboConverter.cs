@@ -643,7 +643,7 @@ namespace OBODataConverter
 
                                 if (OutputOptions.IncludeGrandparentTerms)
                                 {
-                                    if (ancestor != null && ancestor.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
+                                    if (ancestor?.IsObsolete == true && !string.IsNullOrWhiteSpace(purgatoryTermID))
                                     {
                                         lineOut.Add(string.Empty);      // Grandparent term type
                                         lineOut.Add(string.Empty);      // Grandparent term name
