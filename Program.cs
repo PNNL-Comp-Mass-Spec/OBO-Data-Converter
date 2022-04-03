@@ -235,7 +235,7 @@ namespace OBODataConverter
                 Console.WriteLine();
                 Console.WriteLine("Use /NoObsolete to exclude obsolete terms");
                 Console.WriteLine();
-                Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2016");
+                Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)");
                 Console.WriteLine("Version: " + GetAppVersion());
                 Console.WriteLine();
 
