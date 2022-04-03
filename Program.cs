@@ -19,11 +19,16 @@ namespace OBODataConverter
     /// </remarks>
     internal static class Program
     {
-        public const string PROGRAM_DATE = "April 2, 2022";
+        // Ignore Spelling: Postgres
+
+        public const string PROGRAM_DATE = "April 3, 2022";
 
         private static string mInputFilePath;
+
         private static string mOutputFilePath;
+
         private static OboConverter.OutputFileOptions mOutputOptions;
+
         private static string mPrimaryKeySuffix;
 
         private static int Main()
@@ -109,7 +114,8 @@ namespace OBODataConverter
                 "PK", "NoP", "NoG",
                 "Def", "Definition", "StripQuotes",
                 "Com", "Comm", "Comment",
-                "NoObsolete"};
+                "NoObsolete", "Postgres"
+            };
 
             try
             {
@@ -186,6 +192,11 @@ namespace OBODataConverter
                     mOutputOptions.ExcludeObsolete = true;
                 }
 
+                if (commandLineParser.IsParameterPresent("Postgres"))
+                {
+                    mOutputOptions.FormatForPostgres = true;
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -207,7 +218,7 @@ namespace OBODataConverter
                                       "This program reads an Ontology file in the OBO format and converts the data to a tab-delimited text file."));
                 Console.WriteLine();
                 Console.WriteLine("Program syntax:" + Environment.NewLine + exeName);
-                Console.WriteLine(" InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/Def] [/StripQuotes] [/Com] [/NoObsolete]");
+                Console.WriteLine(" InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/Def] [/StripQuotes] [/Com] [/NoObsolete] [/Postgres]");
                 Console.WriteLine();
                 Console.WriteLine("The input file is the OBO file to convert");
                 Console.WriteLine();
@@ -234,6 +245,8 @@ namespace OBODataConverter
                                       "By default the output file will not include the term comments; include them with /Com"));
                 Console.WriteLine();
                 Console.WriteLine("Use /NoObsolete to exclude obsolete terms");
+                Console.WriteLine();
+                Console.WriteLine("Use /Postgres to format the output file for import into Postgres using the COPY command");
                 Console.WriteLine();
                 Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)");
                 Console.WriteLine("Version: " + GetAppVersion());

@@ -48,6 +48,20 @@ namespace OBODataConverter
             /// When true, exclude terms that have attribute is_obsolete: true
             /// </summary>
             public bool ExcludeObsolete;
+
+            /// <summary>
+            /// When true, use \N for null values (empty columns in the output file),
+            /// escape backslashes, and surround each column value with double quotes
+            /// </summary>
+            /// <remarks>
+            /// <para>
+            /// This allows the data file to be imported using the COPY command
+            /// </para>
+            /// <para>
+            /// COPY ont.T_Tmp_PsiMS_2022Apr FROM '/tmp/psi-ms_4.1.80_WithDefinition_StripQuotes_IncludeObsolete.txt' CSV HEADER DELIMITER E'\t' QUOTE '"';
+            /// </para>
+            /// </remarks>
+            public bool FormatForPostgres;
         }
 
         private readonly Regex mQuotedDefinitionMatcher;
@@ -137,6 +151,8 @@ namespace OBODataConverter
                 else
                     outputFile = new FileInfo(outputFilePath);
 
+                var nullValueFlag = GetNullValueFlag();
+
                 // Read the data from the Obo file
                 // Track them using this list
                 var ontologyEntries = new List<OboEntry>();
@@ -154,7 +170,7 @@ namespace OBODataConverter
 
                         if (dataLine == "[Term]")
                         {
-                            ParseTerm(reader, ontologyEntries, ref lineNumber);
+                            ParseTerm(reader, ontologyEntries, nullValueFlag, ref lineNumber);
                         }
                     }
 
@@ -215,6 +231,11 @@ namespace OBODataConverter
                 OnErrorEvent("Exception in ConvertOboFile at line " + lineNumber + ": " + ex.Message);
                 return false;
             }
+        }
+
+        private string GetNullValueFlag()
+        {
+            return OutputOptions.FormatForPostgres ? @"\N" : string.Empty;
         }
 
         public static OutputFileOptions DefaultOutputOptions()
@@ -371,14 +392,14 @@ namespace OBODataConverter
             return dataColumns;
         }
 
-        private void ParseTerm(StreamReader reader, ICollection<OboEntry> ontologyEntries, ref int lineNumber)
+        private void ParseTerm(StreamReader reader, ICollection<OboEntry> ontologyEntries, string nullValueFlag, ref int lineNumber)
         {
             try
             {
-                var identifier = string.Empty;
-                var name = string.Empty;
-                var definition = string.Empty;
-                var comment = string.Empty;
+                var identifier = nullValueFlag;
+                var name = nullValueFlag;
+                var definition = nullValueFlag;
+                var comment = nullValueFlag;
 
                 var parentTerms = new Dictionary<string, OboEntry.ParentTypeInfo>();
                 var isObsolete = false;
@@ -565,6 +586,8 @@ namespace OBODataConverter
                 if (purgatorySearch.Count > 0)
                     purgatoryTermID = purgatorySearch.FirstOrDefault();
 
+                var nullValueFlag = GetNullValueFlag();
+
                 using var writer = new StreamWriter(new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite));
 
                 var columnHeaders = new List<string>
@@ -605,6 +628,8 @@ namespace OBODataConverter
 
                 writer.WriteLine(string.Join("\t", columnHeaders));
 
+                var columnCount = columnHeaders.Count;
+
                 foreach (var ontologyTerm in ontologyEntries)
                 {
                     if (OutputOptions.ExcludeObsolete && ontologyTerm.IsObsolete)
@@ -620,19 +645,19 @@ namespace OBODataConverter
                         {
                             if (ontologyTerm.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
                             {
-                                lineOut.Add(string.Empty);  // Parent term type
-                                lineOut.Add(string.Empty);  // Parent term name
-                                lineOut.Add(string.Empty);  // Parent term ID
+                                lineOut.Add(nullValueFlag); // Parent term type
+                                lineOut.Add(nullValueFlag); // Parent term name
+                                lineOut.Add(nullValueFlag); // Parent term ID
                             }
                             else
                             {
-                                lineOut.Add(string.Empty);  // Parent term type
-                                lineOut.Add(string.Empty);  // Parent term name
-                                lineOut.Add(string.Empty);  // Parent term ID
+                                lineOut.Add(nullValueFlag); // Parent term type
+                                lineOut.Add(nullValueFlag); // Parent term name
+                                lineOut.Add(nullValueFlag); // Parent term ID
                             }
                         }
 
-                        writer.WriteLine(string.Join("\t", lineOut));
+                        WriteLine(writer, lineOut, columnCount, nullValueFlag);
                         continue;
                     }
 
@@ -649,19 +674,19 @@ namespace OBODataConverter
                             {
                                 if (ancestor?.IsObsolete == true && !string.IsNullOrWhiteSpace(purgatoryTermID))
                                 {
-                                    lineOut.Add(string.Empty);  // Grandparent term type
-                                    lineOut.Add(string.Empty);  // Grandparent term name
-                                    lineOut.Add(string.Empty);  // Grandparent term ID
+                                    lineOut.Add(nullValueFlag); // Grandparent term type
+                                    lineOut.Add(nullValueFlag); // Grandparent term name
+                                    lineOut.Add(nullValueFlag); // Grandparent term ID
                                 }
                                 else
                                 {
-                                    lineOut.Add(string.Empty);  // Grandparent term type
-                                    lineOut.Add(string.Empty);  // Grandparent term name
-                                    lineOut.Add(string.Empty);  // Grandparent term ID
+                                    lineOut.Add(nullValueFlag); // Grandparent term type
+                                    lineOut.Add(nullValueFlag); // Grandparent term name
+                                    lineOut.Add(nullValueFlag); // Grandparent term ID
                                 }
                             }
 
-                            writer.WriteLine(string.Join("\t", lineOut));
+                            WriteLine(writer, lineOut, columnCount, nullValueFlag);
                             continue;
                         }
 
@@ -672,7 +697,7 @@ namespace OBODataConverter
                             lineOut.Add(grandParent.Value.ParentTermName);          // Grandparent term name
                             lineOut.Add(grandParent.Key);                           // Grandparent term ID
 
-                            writer.WriteLine(string.Join("\t", lineOut));
+                            WriteLine(writer, lineOut, columnCount, nullValueFlag);
                         }
                     }   // ForEach
                 }       // ForEach
@@ -684,6 +709,33 @@ namespace OBODataConverter
                 OnErrorEvent("Error writing to file " + outputFile.FullName + ": " + ex.Message);
                 return false;
             }
+        }
+
+        private void WriteLine(TextWriter writer, List<string> lineOut, int columnCount, string nullValueFlag)
+        {
+            if (!string.IsNullOrWhiteSpace(nullValueFlag))
+            {
+                while (lineOut.Count < columnCount)
+                {
+                    lineOut.Add(nullValueFlag);
+                }
+            }
+
+            if (OutputOptions.FormatForPostgres)
+            {
+                for (var i = 0; i < lineOut.Count; i++)
+                {
+                    if (lineOut[i].Equals(@"\N"))
+                        continue;
+
+                    // Escape back slashes with \\
+                    // Replace double quotes with ""
+                    // Surround the entire field with double quotes
+                    lineOut[i] = string.Format("\"{0}\"", lineOut[i].Replace(@"\", @"\\").Replace("\"", "\"\""));
+                }
+            }
+
+            writer.WriteLine(string.Join("\t", lineOut));
         }
     }
 }
