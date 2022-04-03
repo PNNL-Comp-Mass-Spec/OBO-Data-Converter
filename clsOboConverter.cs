@@ -565,70 +565,99 @@ namespace OBODataConverter
                 if (purgatorySearch.Count > 0)
                     purgatoryTermID = purgatorySearch.FirstOrDefault();
 
-                using (var writer = new StreamWriter(new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)))
+                using var writer = new StreamWriter(new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite));
+
+                var columnHeaders = new List<string>
                 {
-                    var columnHeaders = new List<string>
+                    "Term_PK",
+                    "Term_Name",
+                    "Identifier",
+                    "Is_Leaf"
+                };
+
+                if (OutputOptions.IncludeDefinition)
+                    columnHeaders.Add("Definition");
+
+                if (OutputOptions.IncludeComment)
+                    columnHeaders.Add("Comment");
+
+                if (OutputOptions.IncludeGrandparentTerms && !OutputOptions.IncludeParentTerms)
+                {
+                    // Force-enable inclusion of parent terms because grandparent terms will be included
+                    var updatedOptions = OutputOptions;
+                    updatedOptions.IncludeParentTerms = true;
+                    OutputOptions = updatedOptions;
+                }
+
+                if (OutputOptions.IncludeParentTerms)
+                {
+                    columnHeaders.Add("Parent_term_type");
+                    columnHeaders.Add("Parent_term_name");
+                    columnHeaders.Add("Parent_term_ID");
+                }
+
+                if (OutputOptions.IncludeGrandparentTerms)
+                {
+                    columnHeaders.Add("GrandParent_term_type");
+                    columnHeaders.Add("GrandParent_term_name");
+                    columnHeaders.Add("GrandParent_term_ID");
+                }
+
+                writer.WriteLine(string.Join("\t", columnHeaders));
+
+                foreach (var ontologyTerm in ontologyEntries)
+                {
+                    if (OutputOptions.ExcludeObsolete && ontologyTerm.IsObsolete)
                     {
-                        "Term_PK",
-                        "Term_Name",
-                        "Identifier",
-                        "Is_Leaf"
-                    };
-
-                    if (OutputOptions.IncludeDefinition)
-                        columnHeaders.Add("Definition");
-
-                    if (OutputOptions.IncludeComment)
-                        columnHeaders.Add("Comment");
-
-                    if (OutputOptions.IncludeGrandparentTerms && !OutputOptions.IncludeParentTerms)
-                    {
-                        // Force-enable inclusion of parent terms because grandparent terms will be included
-                        var updatedOptions = OutputOptions;
-                        updatedOptions.IncludeParentTerms = true;
-                        OutputOptions = updatedOptions;
+                        continue;
                     }
 
-                    if (OutputOptions.IncludeParentTerms)
+                    if (ontologyTerm.ParentTerms.Count == 0 || !OutputOptions.IncludeParentTerms)
                     {
-                        columnHeaders.Add("Parent_term_type");
-                        columnHeaders.Add("Parent_term_name");
-                        columnHeaders.Add("Parent_term_ID");
-                    }
+                        var lineOut = OntologyTermNoParents(ontologyTerm);
 
-                    if (OutputOptions.IncludeGrandparentTerms)
-                    {
-                        columnHeaders.Add("GrandParent_term_type");
-                        columnHeaders.Add("GrandParent_term_name");
-                        columnHeaders.Add("GrandParent_term_ID");
-                    }
-
-                    writer.WriteLine(string.Join("\t", columnHeaders));
-
-                    foreach (var ontologyTerm in ontologyEntries)
-                    {
-                        if (OutputOptions.ExcludeObsolete && ontologyTerm.IsObsolete)
+                        if (OutputOptions.IncludeParentTerms)
                         {
-                            continue;
+                            if (ontologyTerm.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
+                            {
+                                lineOut.Add(string.Empty);  // Parent term type
+                                lineOut.Add(string.Empty);  // Parent term name
+                                lineOut.Add(string.Empty);  // Parent term ID
+                            }
+                            else
+                            {
+                                lineOut.Add(string.Empty);  // Parent term type
+                                lineOut.Add(string.Empty);  // Parent term name
+                                lineOut.Add(string.Empty);  // Parent term ID
+                            }
                         }
 
-                        if (ontologyTerm.ParentTerms.Count == 0 || !OutputOptions.IncludeParentTerms)
-                        {
-                            var lineOut = OntologyTermNoParents(ontologyTerm);
+                        writer.WriteLine(string.Join("\t", lineOut));
+                        continue;
+                    }
 
-                            if (OutputOptions.IncludeParentTerms)
+                    foreach (var parentTerm in ontologyTerm.ParentTerms)
+                    {
+                        var ancestor = GetAncestor(ontologyEntries, parentTerm.Key);
+
+                        if (ancestor == null || ancestor.ParentTerms.Count == 0 || !OutputOptions.IncludeGrandparentTerms)
+                        {
+                            // No grandparents (or grandparents are disabled)
+                            var lineOut = OntologyTermWithParents(ontologyTerm, parentTerm);
+
+                            if (OutputOptions.IncludeGrandparentTerms)
                             {
-                                if (ontologyTerm.IsObsolete && !string.IsNullOrWhiteSpace(purgatoryTermID))
+                                if (ancestor?.IsObsolete == true && !string.IsNullOrWhiteSpace(purgatoryTermID))
                                 {
-                                    lineOut.Add(string.Empty);      // Parent term type
-                                    lineOut.Add(string.Empty);      // Parent term name
-                                    lineOut.Add(string.Empty);      // Parent term ID
+                                    lineOut.Add(string.Empty);  // Grandparent term type
+                                    lineOut.Add(string.Empty);  // Grandparent term name
+                                    lineOut.Add(string.Empty);  // Grandparent term ID
                                 }
                                 else
                                 {
-                                    lineOut.Add(string.Empty);      // Parent term type
-                                    lineOut.Add(string.Empty);      // Parent term name
-                                    lineOut.Add(string.Empty);      // Parent term ID
+                                    lineOut.Add(string.Empty);  // Grandparent term type
+                                    lineOut.Add(string.Empty);  // Grandparent term name
+                                    lineOut.Add(string.Empty);  // Grandparent term ID
                                 }
                             }
 
@@ -636,47 +665,17 @@ namespace OBODataConverter
                             continue;
                         }
 
-                        foreach (var parentTerm in ontologyTerm.ParentTerms)
+                        foreach (var grandParent in ancestor.ParentTerms)
                         {
-                            var ancestor = GetAncestor(ontologyEntries, parentTerm.Key);
+                            var lineOut = OntologyTermWithParents(ontologyTerm, parentTerm);
+                            lineOut.Add(grandParent.Value.ParentType.ToString());   // Grandparent term type
+                            lineOut.Add(grandParent.Value.ParentTermName);          // Grandparent term name
+                            lineOut.Add(grandParent.Key);                           // Grandparent term ID
 
-                            if (ancestor == null || ancestor.ParentTerms.Count == 0 || !OutputOptions.IncludeGrandparentTerms)
-                            {
-                                // No grandparents (or grandparents are disabled)
-                                var lineOut = OntologyTermWithParents(ontologyTerm, parentTerm);
-
-                                if (OutputOptions.IncludeGrandparentTerms)
-                                {
-                                    if (ancestor?.IsObsolete == true && !string.IsNullOrWhiteSpace(purgatoryTermID))
-                                    {
-                                        lineOut.Add(string.Empty);      // Grandparent term type
-                                        lineOut.Add(string.Empty);      // Grandparent term name
-                                        lineOut.Add(string.Empty);      // Grandparent term ID
-                                    }
-                                    else
-                                    {
-                                        lineOut.Add(string.Empty);      // Grandparent term type
-                                        lineOut.Add(string.Empty);      // Grandparent term name
-                                        lineOut.Add(string.Empty);      // Grandparent term ID
-                                    }
-                                }
-
-                                writer.WriteLine(string.Join("\t", lineOut));
-                                continue;
-                            }
-
-                            foreach (var grandParent in ancestor.ParentTerms)
-                            {
-                                var lineOut = OntologyTermWithParents(ontologyTerm, parentTerm);
-                                lineOut.Add(grandParent.Value.ParentType.ToString());   // Grandparent term type
-                                lineOut.Add(grandParent.Value.ParentTermName);          // Grandparent term name
-                                lineOut.Add(grandParent.Key);                           // Grandparent term ID
-
-                                writer.WriteLine(string.Join("\t", lineOut));
-                            }
-                        } // ForEach
-                    } // ForEach
-                } // Using
+                            writer.WriteLine(string.Join("\t", lineOut));
+                        }
+                    }   // ForEach
+                }       // ForEach
 
                 return true;
             }
