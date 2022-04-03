@@ -467,19 +467,22 @@ namespace OBODataConverter
 
                             switch (relationshipType)
                             {
-                                case "has_domain":
                                 case "develops_from":
+                                case "has_column":
+                                case "has_domain":
+                                case "has_optional_column":
+                                case "has_relation":
+                                case "has_structured_representation_in_format":
+                                case "has_value_concept":
+                                case "has_value_type":
                                 case "related_to":
                                     // Ignore these relationship types
                                     break;
                                 case "has_order":
                                     break;
+                                case "has_metric_category":
                                 case "has_regexp":
-                                    AddParentTerm(parentTerms, relationshipType, relationshipParentTermName, relationshipValue, lineNumber, dataLine);
-                                    break;
                                 case "has_units":
-                                    AddParentTerm(parentTerms, relationshipType, relationshipParentTermName, relationshipValue, lineNumber, dataLine);
-                                    break;
                                 case "part_of":
                                     AddParentTerm(parentTerms, relationshipType, relationshipParentTermName, relationshipValue, lineNumber, dataLine);
                                     break;
