@@ -103,6 +103,8 @@ namespace OBODataConverter
             OutputOptions = DefaultOutputOptions();
         }
 
+        // ReSharper disable once UnusedMember.Global
+
         /// <summary>
         /// Convert an Obo file to a tab-delimited text file
         /// </summary>
@@ -145,11 +147,9 @@ namespace OBODataConverter
 
                 OnStatusEvent("Parsing " + oboFile.FullName);
 
-                FileInfo outputFile;
-                if (string.IsNullOrWhiteSpace(outputFilePath))
-                    outputFile = new FileInfo(ConstructOutputFilePath(oboFile));
-                else
-                    outputFile = new FileInfo(outputFilePath);
+                var outputFile = string.IsNullOrWhiteSpace(outputFilePath)
+                    ? new FileInfo(ConstructOutputFilePath(oboFile))
+                    : new FileInfo(outputFilePath);
 
                 var nullValueFlag = GetNullValueFlag();
 
