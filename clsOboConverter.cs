@@ -197,7 +197,7 @@ namespace OBODataConverter
                 }
 
                 Console.WriteLine();
-                OnStatusEvent(string.Format("Found {0:N0} terms, of which {1:N0} are leaf nodes", ontologyEntries.Count, leafNodeCount));
+                OnStatusEvent("Found {0:N0} terms, of which {1:N0} are leaf nodes", ontologyEntries.Count, leafNodeCount);
                 Console.WriteLine();
 
                 var success = WriteOboInfoToFile(ontologyEntries, outputFile);
