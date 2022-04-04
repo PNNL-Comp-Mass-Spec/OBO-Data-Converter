@@ -1,7 +1,7 @@
 The OBO Data Converter reads an Ontology file in the OBO format and converts the data to a tab-delimited text file.
 
-OBO files are described at https://oboformat.googlecode.com/svn/trunk/doc/GO.format.obo-1_2.html
-and are typically edited / managed using OBO-Edit: http://www.oboedit.org/
+OBO files are described at https://owlcollab.github.io/oboformat/doc/GO.format.obo-1_4.html
+and are typically edited / managed using OBO-Edit: https://wiki.geneontology.org/index.php/OBO-Edit
 
 ## Downloads
 
@@ -12,7 +12,11 @@ https://github.com/PNNL-Comp-Mass-Spec/OBO-Data-Converter/releases
 
 ```
 OBODataConverter.exe
- InputFilePath [/O:OutputFilePath] [/PK:Suffix] [/NoP] [/NoG] [/Def] [/StripQuotes] [/Com] [/NoObsolete]
+ InputFilePath [/O:OutputFilePath] [/PK:Suffix] 
+ [/NoP] [/NoG] 
+ [/Def] [/StripQuotes] 
+ [/Com] [/NoObsolete] 
+ [/Postgres]
 ```
 
 The input file is the OBO file to convert
@@ -46,7 +50,11 @@ Use `/NoObsolete` to exclude obsolete terms
 ### Syntax Example
 
 ```
-OBODataConverter.exe psi-ms_4.1.33.obo psi-ms_4.1.33_WithDefinition_StripQuotes_IncludeObsolete.txt /Def /StripQuotes /Com /PK:MS1
+rem Syntax when importing into Postgres
+OBODataConverter.exe psi-ms_4.1.80.obo psi-ms_4.1.80_WithDefinition_StripQuotes_IncludeObsolete.txt /Def /StripQuotes /Com /PK:MS1 /Postgres
+
+rem Syntax when importing into SQL Server
+OBODataConverter.exe psi-ms_4.1.80.obo psi-ms_4.1.80_WithDefinition_StripQuotes_IncludeObsolete.txt /Def /StripQuotes /Com /PK:MS1
 ```
 
 
