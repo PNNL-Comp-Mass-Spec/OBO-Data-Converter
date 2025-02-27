@@ -21,6 +21,9 @@ namespace OBODataConverter
     {
         // Ignore Spelling: Postgres
 
+        /// <summary>
+        /// Program date
+        /// </summary>
         public const string PROGRAM_DATE = "February 26, 2025";
 
         private static string mInputFilePath;

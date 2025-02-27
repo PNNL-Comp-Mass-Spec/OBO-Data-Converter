@@ -2,10 +2,16 @@
 
 namespace OBODataConverter
 {
+    /// <summary>
+    /// OBO entry
+    /// </summary>
     public class OboEntry
     {
         // Ignore Spelling: Obo
 
+        /// <summary>
+        /// Parent type enum
+        /// </summary>
         public enum ParentTypes
         {
             Unknown = 0,
@@ -17,9 +23,19 @@ namespace OBODataConverter
             PartOf = 6
         }
 
+        /// <summary>
+        /// Parent type info struct
+        /// </summary>
         public struct ParentTypeInfo
         {
+            /// <summary>
+            /// Parent type
+            /// </summary>
             public ParentTypes ParentType;
+
+            /// <summary>
+            /// Parent type name
+            /// </summary>
             public string ParentTermName;
 
             /// <summary>
@@ -89,8 +105,8 @@ namespace OBODataConverter
         /// <summary>
         /// Add a parent term
         /// </summary>
-        /// <param name="parentTermID"></param>
-        /// <param name="parentTermInfo"></param>
+        /// <param name="parentTermID">Parent term ID</param>
+        /// <param name="parentTermInfo">Parent term info</param>
         public void AddParentTerm(string parentTermID, ParentTypeInfo parentTermInfo)
         {
             if (ParentTerms.ContainsKey(parentTermID))

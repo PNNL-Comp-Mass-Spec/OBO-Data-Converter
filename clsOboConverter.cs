@@ -21,6 +21,9 @@ namespace OBODataConverter
 
         private const int AUTO_REPLACE_MESSAGE_THRESHOLD = 5;
 
+        /// <summary>
+        /// Output file options struct
+        /// </summary>
         public struct OutputFileOptions
         {
             /// <summary>
@@ -114,9 +117,9 @@ namespace OBODataConverter
         // ReSharper disable once UnusedMember.Global
 
         /// <summary>
-        /// Convert an Obo file to a tab-delimited text file
+        /// Convert an OBO file to a tab-delimited text file
         /// </summary>
-        /// <param name="oboFilePath"></param>
+        /// <param name="oboFilePath">OBO file path</param>
         /// <returns>True if success, otherwise false</returns>
         public bool ConvertOboFile(string oboFilePath)
         {
@@ -128,10 +131,10 @@ namespace OBODataConverter
         }
 
         /// <summary>
-        /// Convert an Obo file to a tab-delimited text file
+        /// Convert an OBO file to a tab-delimited text file
         /// </summary>
-        /// <param name="oboFilePath"></param>
-        /// <param name="outputFilePath"></param>
+        /// <param name="oboFilePath">Input file path</param>
+        /// <param name="outputFilePath">Output file path</param>
         /// <returns>True if success, otherwise false</returns>
         public bool ConvertOboFile(string oboFilePath, string outputFilePath)
         {
@@ -161,7 +164,7 @@ namespace OBODataConverter
 
                 var nullValueFlag = GetNullValueFlag();
 
-                // Read the data from the Obo file
+                // Read the data from the OBO file
                 // Track them using this list
                 var ontologyEntries = new List<OboEntry>();
                 var leafNodeCount = 0;
@@ -246,6 +249,9 @@ namespace OBODataConverter
             return OutputOptions.FormatForPostgres ? @"\N" : string.Empty;
         }
 
+        /// <summary>
+        /// Default output file options
+        /// </summary>
         public static OutputFileOptions DefaultOutputOptions()
         {
             return new OutputFileOptions
@@ -561,9 +567,15 @@ namespace OBODataConverter
                 var delimiterName = delimiter == ' ' ? "space" : delimiter.ToString();
 
                 if (string.IsNullOrWhiteSpace(dataDescription))
+                {
                     OnWarningEvent("{0} not found in line {1}: {2}", delimiterName, lineNumber, data);
+                }
                 else
+                {
+                    // Example message:
+                    // ! not found in relationshipDef for line 6733: has_value_type xsd:dateTime
                     OnWarningEvent("{0} not found in {1} for line {2}: {3}", delimiterName, dataDescription, lineNumber, data);
+                }
 
                 key = null;
                 value = null;
