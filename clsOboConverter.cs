@@ -564,9 +564,11 @@ namespace OBODataConverter
                             isObsolete = true;
                             break;
 
-                        case "property_value":
                         case "created_by":
                         case "creation_date":
+                        case "namespace":
+                        case "property_value":
+                        case "subset":
                             // Ignore
                             break;
 
