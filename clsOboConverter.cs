@@ -460,9 +460,21 @@ namespace OBODataConverter
 
                         case "is_a":
 
-                            if (!SplitKeyValuePair(value.Trim(), '!', "is_a", lineNumber, out var parentTermId, out var parentTermName))
+                            var trimmedValue1 = value.Trim();
+                            string parentTermId;
+                            string parentTermName;
+
+                            if (trimmedValue1.IndexOf('!') > 0)
                             {
-                                continue;
+                                if (!SplitKeyValuePair(trimmedValue1, '!', "is_a", lineNumber, out parentTermId, out parentTermName))
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                parentTermId = trimmedValue1;
+                                parentTermName = trimmedValue1;
                             }
 
                             AddParentTerm(parentTerms, "is_a", parentTermId, parentTermName, lineNumber, dataLine);
@@ -475,13 +487,41 @@ namespace OBODataConverter
                             break;
 
                         case "relationship":
+                            // The text in "Value" is the text after "relationship: " in the data line
+                            // Part 1 is the relationship type
+                            // Part 2 is the relationship identifier
+                            // Part 3 is optional, and starts with an exclamation mark; this is either a human-readable version of the identifier or a comment
 
                             // relationship: part_of MS:1000458 ! source
+                            // relationship: has_units UO:0000021 ! gram
                             // relationship: has_units UO:0000187 ! percent
+                            // relationship: has_value_type xsd:dateTime ! The allowed value-type for this CV term
+                            // relationship: has_value_type xsd:dateTime
 
-                            if (!SplitKeyValuePair(value.Trim(), '!', "relationshipDef", lineNumber, out var relationshipTypeAndParent, out var relationshipValue))
+                            var trimmedValue2 = value.Trim();
+                            string relationshipTypeAndParent;
+                            string relationshipValue;
+
+                            if (trimmedValue2.IndexOf('!') > 0)
                             {
-                                continue;
+                                if (!SplitKeyValuePair(trimmedValue2, '!', "relationshipDef", lineNumber, out relationshipTypeAndParent, out var extractedRelationshipValue))
+                                {
+                                    continue;
+                                }
+
+                                if (extractedRelationshipValue.StartsWith("The allowed value-type for this CV"))
+                                {
+                                    relationshipValue = string.Empty;
+                                }
+                                else
+                                {
+                                    relationshipValue = extractedRelationshipValue;
+                                }
+                            }
+                            else
+                            {
+                                relationshipTypeAndParent = trimmedValue2;
+                                relationshipValue = string.Empty;
                             }
 
                             if (!SplitKeyValuePair(relationshipTypeAndParent.Trim(), ' ', "relationshipTypeAndParent", lineNumber, out var relationshipType, out var relationshipParentTermName))
@@ -508,7 +548,11 @@ namespace OBODataConverter
                                 case "has_regexp":
                                 case "has_units":
                                 case "part_of":
-                                    AddParentTerm(parentTerms, relationshipType, relationshipParentTermName, relationshipValue, lineNumber, dataLine);
+                                    AddParentTerm(
+                                        parentTerms, relationshipType, relationshipParentTermName,
+                                        string.IsNullOrWhiteSpace(relationshipValue) ? relationshipParentTermName : relationshipValue,
+                                        lineNumber, dataLine);
+
                                     break;
                                 default:
                                     OnWarningEvent("Unknown relationship type {0} at line {1}: {2}", relationshipType, lineNumber, dataLine);
