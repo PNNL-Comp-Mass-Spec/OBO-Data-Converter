@@ -664,6 +664,13 @@ namespace OBODataConverter
                                 lineOut.Add(nullValueFlag); // Parent term name
                                 lineOut.Add(nullValueFlag); // Parent term ID
                             }
+
+                            if (OutputOptions.IncludeGrandparentTerms)
+                            {
+                                lineOut.Add(nullValueFlag); // Grandparent term type
+                                lineOut.Add(nullValueFlag); // Grandparent term name
+                                lineOut.Add(nullValueFlag); // Grandparent term ID
+                            }
                         }
 
                         WriteLine(writer, lineOut, columnCount, nullValueFlag);
