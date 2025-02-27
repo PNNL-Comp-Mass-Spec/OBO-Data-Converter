@@ -22,9 +22,12 @@ namespace OBODataConverter
             public ParentTypes ParentType;
             public string ParentTermName;
 
+            /// <summary>
+            /// Show parent type and name
+            /// </summary>
             public readonly override string ToString()
             {
-                return ParentType + ": " + ParentTermName;
+                return string.Format("{0}: {1}", ParentType, ParentTermName);
             }
         }
 
@@ -104,7 +107,7 @@ namespace OBODataConverter
         /// </summary>
         public override string ToString()
         {
-            return Identifier + ": " + Name;
+            return string.Format("{0}: {1}", Identifier, Name);
         }
     }
 }

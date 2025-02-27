@@ -216,7 +216,7 @@ namespace OBODataConverter
                     Console.WriteLine();
                     foreach (var replacementItem in autoReplacementsOverThreshold)
                     {
-                        OnStatusEvent(" ... " + replacementItem.Key + " " + replacementItem.Value + " times");
+                        OnStatusEvent(" ... {0} {1} times", replacementItem.Key, replacementItem.Value);
                     }
                 }
 
@@ -236,7 +236,7 @@ namespace OBODataConverter
             }
             catch (Exception ex)
             {
-                OnErrorEvent("Exception in ConvertOboFile at line " + lineNumber + ": " + ex.Message);
+                OnErrorEvent("Exception in ConvertOboFile at line {0}: {1}", lineNumber, ex.Message);
                 return false;
             }
         }
@@ -283,7 +283,7 @@ namespace OBODataConverter
         {
             if (parentTerms.ContainsKey(parentTermId))
             {
-                OnWarningEvent("Parent term specified twice; ignoring " + parentTermId + " for line " + lineNumber + ": " + dataLine);
+                OnWarningEvent("Parent term specified twice; ignoring {0} for line {1}: {2}", parentTermId, lineNumber, dataLine);
                 return;
             }
 
@@ -338,7 +338,7 @@ namespace OBODataConverter
                 // Replace the text and possibly inform the user that we made this change
                 updatedValue = updatedValue.Replace(replacementItem.Key, replacementItem.Value);
 
-                var replacementMsg = "auto-replaced " + replacementItem.Key + " with " + replacementItem.Value;
+                var replacementMsg = string.Format("auto-replaced {0} with {1}", replacementItem.Key, replacementItem.Value);
 
                 if (!replacementCountsByType.TryGetValue(replacementMsg, out var previousCount))
                 {
@@ -349,7 +349,7 @@ namespace OBODataConverter
                 replacementCountsByType[replacementMsg] = previousCount + 1;
 
                 if (previousCount < AUTO_REPLACE_MESSAGE_THRESHOLD)
-                    OnStatusEvent(" ... " + replacementMsg + " in " + value);
+                    OnStatusEvent(" ... {0} in {1}", replacementMsg, value);
             }
 
             return updatedValue;
@@ -516,7 +516,7 @@ namespace OBODataConverter
                                     AddParentTerm(parentTerms, relationshipType, relationshipParentTermName, relationshipValue, lineNumber, dataLine);
                                     break;
                                 default:
-                                    OnWarningEvent("Unknown relationship type " + relationshipType + " at line " + lineNumber + ": " + dataLine);
+                                    OnWarningEvent("Unknown relationship type {0} at line {1}: {2}", relationshipType, lineNumber, dataLine);
                                     break;
                             }
                             break;
@@ -532,7 +532,7 @@ namespace OBODataConverter
                             break;
 
                         default:
-                            OnWarningEvent("Unknown key " + key + " at line " + lineNumber + ": " + dataLine);
+                            OnWarningEvent("Unknown key {0} at line {1}: {2}", key, lineNumber, dataLine);
                             break;
                     }
                 }
@@ -553,7 +553,7 @@ namespace OBODataConverter
             }
             catch (Exception ex)
             {
-                throw new Exception("Exception in ParseTerm at line " + lineNumber + ": " + ex.Message, ex);
+                throw new Exception(string.Format("Exception in ParseTerm at line {0}: {1}", lineNumber, ex.Message), ex);
             }
         }
 
@@ -566,9 +566,9 @@ namespace OBODataConverter
                 var delimiterName = delimiter == ' ' ? "space" : delimiter.ToString();
 
                 if (string.IsNullOrWhiteSpace(dataDescription))
-                    OnWarningEvent(delimiterName + " not found in line " + lineNumber + ": " + data);
+                    OnWarningEvent("{0} not found in line {1}: {2}", delimiterName, lineNumber, data);
                 else
-                    OnWarningEvent(delimiterName + " not found in " + dataDescription + " for line " + lineNumber + ": " + data);
+                    OnWarningEvent("{0} not found in {1} for line {2}: {3}", delimiterName, dataDescription, lineNumber, data);
 
                 key = null;
                 value = null;
@@ -722,7 +722,7 @@ namespace OBODataConverter
             }
             catch (Exception ex)
             {
-                OnErrorEvent("Error writing to file " + outputFile.FullName + ": " + ex.Message);
+                OnErrorEvent("Error writing to file {0}: {1}", outputFile.FullName, ex.Message);
                 return false;
             }
         }
