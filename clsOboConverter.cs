@@ -248,7 +248,7 @@ namespace OBODataConverter
 
         public static OutputFileOptions DefaultOutputOptions()
         {
-            var outputOptions = new OutputFileOptions()
+            return new OutputFileOptions
             {
                 IncludeDefinition = false,
                 StripQuotesFromDefinition = false,
@@ -257,8 +257,6 @@ namespace OBODataConverter
                 IncludeGrandparentTerms = true,
                 ExcludeObsolete = false
             };
-
-            return outputOptions;
         }
 
         private string ConstructOutputFilePath(FileInfo oboFile)
@@ -357,10 +355,7 @@ namespace OBODataConverter
 
         private static byte BoolToTinyInt(bool value)
         {
-            if (value)
-                return 1;
-
-            return 0;
+            return value ? (byte)1 : (byte)0;
         }
 
         private static OboEntry GetAncestor(IEnumerable<OboEntry> ontologyEntries, string termIdentifier)
