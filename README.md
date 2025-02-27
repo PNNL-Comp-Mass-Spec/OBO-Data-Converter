@@ -62,7 +62,7 @@ OBODataConverter.exe psi-ms_4.1.80.obo psi-ms_4.1.80_WithDefinition_StripQuotes_
 
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2016 \
 E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov \
-Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics/
+Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://www.pnnl.gov/integrative-omics
 Source code: https://github.com/PNNL-Comp-Mass-Spec/OBO-Data-Converter
 
 ## License
