@@ -9,7 +9,7 @@ namespace OBODataConverter
 {
     internal class OboConverter : EventNotifier
     {
-        // Ignore Spelling: Obo
+        // Ignore Spelling: Obo, Postgres
 
         /// <summary>
         /// Default primary key suffix
@@ -54,6 +54,8 @@ namespace OBODataConverter
             /// When true, exclude terms that have attribute is_obsolete: true
             /// </summary>
             public bool ExcludeObsolete;
+
+            // ReSharper disable once GrammarMistakeInComment
 
             /// <summary>
             /// When true, use \N for null values (empty columns in the output file),
@@ -610,6 +612,7 @@ namespace OBODataConverter
                 if (OutputOptions.IncludeComment)
                     columnHeaders.Add("Comment");
 
+                // ReSharper disable once MergeIntoPattern
                 if (OutputOptions.IncludeGrandparentTerms && !OutputOptions.IncludeParentTerms)
                 {
                     // Force-enable inclusion of parent terms because grandparent terms will be included

@@ -4,6 +4,8 @@ namespace OBODataConverter
 {
     public class OboEntry
     {
+        // Ignore Spelling: Obo
+
         public enum ParentTypes
         {
             Unknown = 0,
