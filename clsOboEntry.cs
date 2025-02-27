@@ -26,12 +26,24 @@ namespace OBODataConverter
             }
         }
 
+        /// <summary>
+        /// Ontology term identifier
+        /// </summary>
         public string Identifier { get; }
 
+        /// <summary>
+        /// Ontology term name
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Definition
+        /// </summary>
         public string Definition { get; set; }
 
+        /// <summary>
+        /// Comment
+        /// </summary>
         public string Comment { get; set; }
 
         /// <summary>
@@ -42,15 +54,22 @@ namespace OBODataConverter
         /// </remarks>
         public Dictionary<string, ParentTypeInfo> ParentTerms { get; }
 
+        /// <summary>
+        /// True if this entry does not have any children
+        /// </summary>
         public bool IsLeaf { get; set; }
+
+        /// <summary>
+        /// True if this entry is obsolete
+        /// </summary>
         public bool IsObsolete { get; set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="identifier"></param>
-        /// <param name="name"></param>
-        /// <param name="isLeaf"></param>
+        /// <param name="identifier">Term identifier</param>
+        /// <param name="name">Term name</param>
+        /// <param name="isLeaf">True if this entry does not have any children</param>
         public OboEntry(string identifier, string name, bool isLeaf = false)
         {
             Identifier = identifier;
@@ -62,6 +81,11 @@ namespace OBODataConverter
             ParentTerms = new Dictionary<string, ParentTypeInfo>();
         }
 
+        /// <summary>
+        /// Add a parent term
+        /// </summary>
+        /// <param name="parentTermID"></param>
+        /// <param name="parentTermInfo"></param>
         public void AddParentTerm(string parentTermID, ParentTypeInfo parentTermInfo)
         {
             if (ParentTerms.ContainsKey(parentTermID))
@@ -73,6 +97,9 @@ namespace OBODataConverter
             ParentTerms.Add(parentTermID, parentTermInfo);
         }
 
+        /// <summary>
+        /// Show term ID and name
+        /// </summary>
         public override string ToString()
         {
             return Identifier + ": " + Name;

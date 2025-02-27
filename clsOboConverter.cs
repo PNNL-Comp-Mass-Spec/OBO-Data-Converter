@@ -11,6 +11,12 @@ namespace OBODataConverter
     {
         // Ignore Spelling: Obo
 
+        /// <summary>
+        /// Default primary key suffix
+        /// </summary>
+        /// <remarks>
+        /// This suffix is appended to the ontology term identifier when creating the primary key for the Term_PK column
+        /// </remarks>
         public const string DEFAULT_PRIMARY_KEY_SUFFIX = "MS1";
 
         private const int AUTO_REPLACE_MESSAGE_THRESHOLD = 5;
@@ -728,7 +734,7 @@ namespace OBODataConverter
                     if (lineOut[i].Equals(@"\N"))
                         continue;
 
-                    // Escape back slashes with \\
+                    // Escape backslashes with \\
                     // Replace double quotes with ""
                     // Surround the entire field with double quotes
                     lineOut[i] = string.Format("\"{0}\"", lineOut[i].Replace(@"\", @"\\").Replace("\"", "\"\""));
