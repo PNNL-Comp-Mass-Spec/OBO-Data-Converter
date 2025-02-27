@@ -189,8 +189,8 @@ namespace OBODataConverter
                     {
                         foreach (var parentTerm in ontologyTerm.ParentTerms)
                         {
-                            if (!parentNodes.Contains(parentTerm.Key))
-                                parentNodes.Add(parentTerm.Key);
+                            // Add the parent term if not yet in the sorted set
+                            parentNodes.Add(parentTerm.Key);
                         }
                     }
 
@@ -720,7 +720,7 @@ namespace OBODataConverter
             }
         }
 
-        private void WriteLine(TextWriter writer, List<string> lineOut, int columnCount, string nullValueFlag)
+        private void WriteLine(TextWriter writer, IList<string> lineOut, int columnCount, string nullValueFlag)
         {
             if (!string.IsNullOrWhiteSpace(nullValueFlag))
             {

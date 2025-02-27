@@ -22,7 +22,7 @@ namespace OBODataConverter
             public ParentTypes ParentType;
             public string ParentTermName;
 
-            public override string ToString()
+            public readonly override string ToString()
             {
                 return ParentType + ": " + ParentTermName;
             }
