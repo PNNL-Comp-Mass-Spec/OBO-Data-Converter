@@ -469,13 +469,7 @@ namespace OBODataConverter
                             break;
 
                         case "synonym":
-                            // Ignore
-                            break;
-
                         case "replaced_by":
-                            // Ignore
-                            break;
-
                         case "alt_id":
                             // Ignore
                             break;
