@@ -1,44 +1,142 @@
 
-== Updating PSI-MS terms using an OBO file ==
+== Updating MS ontology using an OBO file ==
 
-Use the following steps to import new PSI-MS terms using a psi-ms OBO file.
+Use the following steps to import new PSI-MS terms using a PSI-MS OBO file.
 
-# Download the latest OBO file from GitHub
-#* [https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo psi-ms-CV/master/psi-ms.obo]
-#* Also distributed via a mailing list, for example https://sourceforge.net/p/psidev/mailman/message/35158324/
-# Convert the file to tab-delimited text using OBODataConverter.exe
-#* <code>OBODataConverter.exe psi-ms_4.1.33.obo psi-ms_4.1.33_WithDefinition_StripQuotes_IncludeObsolete.txt /Def /StripQuotes /Com /PK:MS1</code>
-# Import <code>psi-ms_4.1.33_WithDefinition_StripQuotes_IncludeObsolete.txt</code> into database Ontology_Lookup on Gigasax
-#* Use SQL Server Management Studio
-#* Right click the database, choose Tasks, then Import Data
-#** Do not use <code>Tasks, Import Flat file</code>; it fails with error "Cannot find patterns in the input file"
-#* Change the Data Source to Flat File Source and click Next
-#* Select the input file, then click Advanced, Suggest Types
-#** Preview 999 rows and pad string columns by 100%
-#** Update column Term_Name to have OutputColumnWidth=255
-#** Update column Definition to have OutputColumnWidth=1500
-#** Update column Comment to have OutputColumnWidth=1000
-#** Update column Parent_Term_Name to have OutputColumnWidth=500
-#***Required due to some long RegEx definitions
-#* Click next, then choose destination: SQL Server Native Client 11
-#* Click next, then define the destination table: [dbo].[T_Tmp_PsiMS_2020Jan]
-#* Click next, next, next, then finish
-#** Will import around 3835 rows
-#* If an error regarding truncated data, note the column name, then
-#** Click Back to return to the Data Source Screen
-#** Expand the column, e.g. expand Term_Name to have OutputColumnWidth=255
-#** Update table T_Tmp_PsiMS_2020Jan in the database to expand that column and to delete all rows
-#** Back on the wizard, click Next to select the destination database and re-define the destination table as: [dbo].[T_Tmp_PsiMS_2020Jan]
-#** Optionally change <code>On truncation (global)</code> to "Ignore"
-#** Click next, next, then finish
-# Call stored procedure AddNewMSTerms to update T_CV_MS
+* Download the latest OBO file from GitHub
+** [https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo psi-ms-CV/master/psi-ms.obo]
+** Also distributed via a mailing list, for example https://sourceforge.net/p/psidev/mailman/message/35158324/
+* Save to <code>OBO_Data_Converter\docs</code>, naming after the data version
+** For example, <code>psi-ms_4.1.191.obo</code>
+* Convert the file to tab-delimited text using OBODataConverter.exe
+<syntaxhighlight lang="batch">
+rem Syntax when importing into Postgres
+..\bin\OBODataConverter.exe psi-ms_4.1.191.obo psi-ms_4.1.191_WithDefinition_StripQuotes_IncludeObsolete.txt /Def /StripQuotes /Com /PK:MS1 /Postgres
 
-<syntaxHighlight lang="sql">exec AddNewMSTerms 'T_Tmp_PsiMS_2020Jan', @infoOnly=1
-</syntaxHighlight>
+rem Syntax when importing into SQL Server
+..\bin\OBODataConverter.exe psi-ms_4.1.191.obo psi-ms_4.1.191_WithDefinition_StripQuotes_IncludeObsolete.txt /Def /StripQuotes /Com /PK:MS1
+</syntaxhighlight>
+
+* Import <code>psi-ms_4.1.191_WithDefinition_StripQuotes_IncludeObsolete.txt</code> into the database
+
+=== Importing into PostgreSQL ===
+
+* Use Beyond Compare or WinSCP to copy file <code>psi-ms_4.1.191_WithDefinition_StripQuotes_IncludeObsolete.txt</code> to <code>/tmp/</code> on PrismDB2
+* Create a table to hold the data
+<syntaxhighlight lang="postgres">
+-- Run this in psql
+\c dms
+
+CREATE TABLE ont.T_Tmp_PsiMS_2025Feb (
+    Term_PK text NULL,
+    Term_Name text NULL,
+    Identifier text NULL,
+    Is_Leaf smallint NULL,
+    Definition text NULL,
+    Comment text NULL,
+    Parent_term_type text NULL,
+    Parent_term_name text NULL,
+    Parent_term_ID text NULL,
+    GrandParent_term_type text NULL,
+    GrandParent_term_name text NULL,
+    GrandParent_term_ID text NULL
+);
+</syntaxhighlight>
+
+* Use psql to import the file
+** Use <code>CSV</code>, as shown, even though this is a tab-delimited file
+** <code>HEADER</code> means to skip the first line
+** Null values should be indicated by <code>\N</code> in the text file
+
+* Use the COPY command to import the file
+<syntaxhighlight lang="postgres">
+COPY ont.T_Tmp_PsiMS_2025Feb FROM '/tmp/psi-ms_4.1.191_WithDefinition_StripQuotes_IncludeObsolete.txt' CSV HEADER DELIMITER E'\t' QUOTE '"' NULL '\N';
+-- COPY 5106
+</syntaxhighlight>
+
+* Use function <code>add_new_ms_terms</code> to update T_CV_MS
+<syntaxhighlight lang="postgres">
+SELECT * FROM ont.add_new_ms_terms('T_Tmp_PsiMS_2025Feb', _infoOnly => true);
+</syntaxhighlight>
+
+Review the updates, then run again with false for <code>_infoOnly</code><br>
+
+<syntaxhighlight lang="postgres">
+SELECT * FROM ont.add_new_ms_terms('T_Tmp_PsiMS_2025Feb', false);
+</syntaxhighlight>
+
+Example output:
+<pre>
+INFO:  Importing from ont.t_tmp_psims_2025feb
+INFO:  Deleted 3935 obsolete rows in ont.t_cv_ms based on entries in t_tmp_psims_2025feb
+INFO:  Updated 0 rows in ont.t_cv_ms using t_tmp_psims_2025feb
+INFO:  Added 1001 new rows to ont.t_cv_ms using t_tmp_psims_2025feb
+</pre>
+
+Example output when running a second time:
+<pre>
+INFO:  Updated 0 rows in ont.t_cv_ms using t_tmp_psims_2025feb
+INFO:  Added 3755 new rows to ont.t_cv_ms using t_tmp_psims_2025feb
+</pre>
+
+<syntaxhighlight lang="postgres">
+SELECT count(*) FROM ont.t_cv_ms;      -- 4756 rows
+</syntaxhighlight>
+
+Call <code>backfill_terms</code> to add/update rows in tables <code>ont.t_term</code> and <code>ont.t_term_relationship</code>  using table<code>ont.t_cv_ms</code>
+* The Ontology List Report uses view <code>ont.v_ontology_list_report</code> , and that view uses view <code>ont.v_term</code> 
+* View <code>ont.v_term</code> pulls data from tables <code>ont.t_ontology</code> and <code>ont.t_term </code> 
+<syntaxhighlight lang="postgres">
+SELECT * FROM backfill_terms (_sourceTable => 't_cv_ms', _namespace => 'MS', _infoOnly => true, _previewRelationshipUpdates => false);
+SELECT * FROM backfill_terms (_sourceTable => 't_cv_ms', _namespace => 'MS', _infoOnly => false, _previewRelationshipUpdates => false);
+</syntaxhighlight>
+
+Example output:
+<pre>
+INFO:  Back filling ont.t_term and ont.t_term_relationship using ont.t_cv_ms
+INFO:  Updated 110 rows in ont.t_term using t_cv_ms
+INFO:  Added 1092 new rows to ont.t_term using t_cv_ms
+INFO:  Inserted 1858 new parent/child relationships into table ont.t_term_relationship
+INFO:  Deleted 2862 parent/child relationships from table ont.t_term_relationship
+</pre>
+
+<syntaxhighlight lang="postgres">
+SELECT COUNT(*) FROM ont.v_ontology_list_report WHERE ontology = 'MS';      -- 6358 rows
+</syntaxhighlight>
+<br>
+
+=== Importing into SQL Server ===
+
+Use SQL Server Management Studio to import the data
+* Connect to the Ontology_Lookup database on Gigasax
+* Right click the database, choose Tasks, then Import Data
+** Do not use <code>Tasks, Import Flat file</code>; it fails with error "Cannot find patterns in the input file"
+* Change the Data Source to Flat File Source and click Next
+* Select the input file, then click Advanced, Suggest Types
+** Preview 999 rows and pad string columns by 100%
+** Update column Term_Name to have OutputColumnWidth=255
+** Update column Definition to have OutputColumnWidth=1500
+** Update column Comment to have OutputColumnWidth=1000
+** Update column Parent_Term_Name to have OutputColumnWidth=500
+*** Required due to some long RegEx definitions
+* Click next, then choose destination: SQL Server Native Client 11
+* Click next, then define the destination table: <code>T_Tmp_PsiMS_2022Apr</code>
+* Click next, next, next, then finish
+** Will import around 4200 rows
+* If an error regarding truncated data, note the column name, then
+** Click Back to return to the Data Source Screen
+** Expand the column, e.g. expand Term_Name to have OutputColumnWidth=255
+** Update table T_Tmp_PsiMS_2022Apr in the database to expand that column and to delete all rows
+** Back on the wizard, click Next to select the destination database and re-define the destination table as: <code>[dbo].[T_Tmp_PsiMS_2022Apr]</code>
+** Optionally change <code>On truncation (global)</code> to "Ignore"
+** Click next, next, then finish
+* Call stored procedure <code>add_new_ms_terms</code> to update T_CV_MS
+
+<syntaxhighlight lang="sql">
+EXEC add_new_ms_terms 'T_Tmp_PsiMS_2022Apr', @infoOnly=0
+</syntaxhighlight>
 
 Review the updates, then run again with <code>@infoOnly=0</code><br>
 Example output:
 * Updated 240 rows in T_CV_MS using T_Tmp_PsiMS_2020Jan
 * Added 117 new rows to T_CV_MS using T_Tmp_PsiMS_2020Jan
-
-[[Category:Software]]
