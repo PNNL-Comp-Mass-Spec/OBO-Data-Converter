@@ -227,7 +227,7 @@ namespace OBODataConverter
                                       "If not provided the output file will have extension .txt or .txt.new"));
                 Console.WriteLine();
                 Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
-                                      "Use /PK to specify the string to append to the ontology term identifier" +
+                                      "Use /PK to specify the string to append to the ontology term identifier " +
                                       "when creating the primary key for the Term_PK column. By default uses /PK:MS1"));
                 Console.WriteLine();
                 Console.WriteLine("By default the output file includes parent terms; remove them with /NoP");
